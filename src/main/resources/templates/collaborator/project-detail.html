@@ -1,10 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title th:text="'Proyecto: ' + ${project.title}">Detalle Proyecto</title>
 </head>
 <body>
-$END$
+<section layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 th:text="${project.title}">Título Proyecto</h1>
+        <div>
+             <span th:text="${project.closed ? 'Cerrado' : 'Activo'}"
+                   th:classappend="${project.closed ? 'badge bg-secondary fs-5' : 'badge bg-success fs-5'}">
+                   Estado
+             </span>
+            <!-- Botones de acción para el Gestor -->
+            <a th:href="@{/manager/project-list}" class="btn btn-outline-secondary btn-sm ms-2" title="Volver a la lista"><i class="bi bi-arrow-left"></i> Volver</a>
+            <a sec:authorize="hasAuthority('GESTOR')" th:if="${!project.closed}" th:href="@{/projects/{id}/edit(id=${project.id})}" class="btn btn-warning btn-sm ms-2" title="Editar Proyecto"><i class="bi bi-pencil"></i> Editar</a>
+            <form sec:authorize="hasAuthority('GESTOR')" th:action="@{/projects/{id}/close(id=${project.id})}" method="post" class="d-inline ms-2" th:if="${!project.closed}" onsubmit="return confirm('¿Estás seguro de cerrar este proyecto?');">
+                <button type="submit" class="btn btn-danger btn-sm" title="Cerrar Proyecto"><i class="bi bi-lock"></i> Cerrar</button>
+            </form>
+        </div>
+    </div>
+
+    <p th:if="${project.description}" th:text="${project.description}">Descripción del proyecto.</p>
+    <p><strong>Propietario:</strong> <span th:text="${project.owner.nombre} + ' ' + ${project.owner.apellidos}"></span></p>
+    <p><strong>Creado:</strong> <span th:text="${#temporals.format(project.createdAt, 'dd MMMM yyyy, HH:mm')}"></span></p>
+
+    <hr>
+
+    <!-- Sección de Colaboradores -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h3><i class="bi bi-people"></i> Colaboradores</h3>
+            <ul th:if="${!#lists.isEmpty(project.collaborators)}" class="list-group">
+                <li class="list-group-item" th:each="collab : ${project.collaborators}" th:text="${collab.nombre} + ' ' + ${collab.apellidos} + ' (' + ${collab.email} + ')'"></li>
+            </ul>
+            <p th:if="${#lists.isEmpty(project.collaborators)}" class="text-muted">Aún no hay colaboradores en este proyecto.</p>
+        </div>
+        <!-- Formulario Invitar Colaborador (Solo Gestor y si proyecto no cerrado) -->
+        <div class="col-md-6" sec:authorize="hasAuthority('GESTOR')" th:if="${!project.closed}">
+            <h4>Invitar Colaborador</h4>
+            <form th:action="@{/projects/{id}/invite(id=${project.id})}" method="post" class="row g-2 align-items-end">
+                <div class="col">
+                    <label for="collaboratorEmail" class="form-label visually-hidden">Email Colaborador:</label>
+                    <input type="email" id="collaboratorEmail" name="email" class="form-control form-control-sm" required placeholder="Email del colaborador...">
+                    <!-- Añadir campos para nombre, apellidos si se crean al invitar -->
+                    <!-- Ejemplo: -->
+                    <input type="text" name="nombre" class="form-control form-control-sm mt-1" placeholder="Nombre (si es nuevo)">
+                    <input type="text" name="apellidos" class="form-control form-control-sm mt-1" placeholder="Apellidos (si es nuevo)">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-secondary btn-sm"><i class="bi bi-person-plus"></i> Invitar</button>
+                </div>
+            </form>
+            <small class="form-text text-muted">Si el email ya existe como colaborador, se añadirá al proyecto. Si no existe, se creará (requiere nombre/apellidos).</small>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Sección de Tareas -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3><i class="bi bi-check2-square"></i> Tareas del Proyecto</h3>
+        <a sec:authorize="hasAuthority('GESTOR')" th:if="${!project.closed}" th:href="@{/projects/{id}/tasks/new(id=${project.id})}" class="btn btn-success btn-sm"><i class="bi bi-plus-circle"></i> Nueva Tarea</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(tasks)}" class="alert alert-light" role="alert">
+        No hay tareas creadas en este proyecto todavía.
+    </div>
+
+    <table class="table table-hover" th:unless="${#lists.isEmpty(tasks)}">
+        <thead class="table-light">
+        <tr>
+            <th>Título</th>
+            <th>Asignada a</th>
+            <th>Vencimiento</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task : ${tasks}">
+            <td>
+                <a th:href="@{/tasks/{taskId}(taskId=${task.id})}" th:text="${task.title}">Título Tarea</a>
+            </td>
+            <td th:text="${task.assignedUser?.nombre} + ' ' + ${task.assignedUser?.apellidos}">Usuario Asignado</td>
+            <td th:text="${task.dueDate != null ? #temporals.format(task.dueDate, 'dd/MM/yyyy') : '-'}">Fecha</td>
+            <td>
+                    <span th:text="${task.status.displayName}"
+                          th:classappend="${task.status == T(com.ejemplo.gestionproyectos.model.TaskStatus).COMPLETADA ? 'badge bg-success' : (task.status == T(com.ejemplo.gestionproyectos.model.TaskStatus).PENDIENTE ? 'badge bg-warning text-dark' : 'badge bg-info text-dark')}">
+                    </span>
+            </td>
+            <td>
+                <a th:href="@{/tasks/{taskId}(taskId=${task.id})}" class="btn btn-outline-info btn-sm" title="Ver/Comentar"><i class="bi bi-chat-dots"></i></a>
+                <!-- Acciones de Gestor (solo si proyecto no está cerrado) -->
+                <span sec:authorize="hasAuthority('GESTOR')" th:if="${!project.closed}">
+                        <a th:href="@{/tasks/{taskId}/edit(taskId=${task.id})}" class="btn btn-outline-warning btn-sm" title="Editar Tarea"><i class="bi bi-pencil"></i></a>
+                        <form th:action="@{/tasks/{taskId}/delete(taskId=${task.id})}" method="post" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar esta tarea?');">
+                             <button type="submit" class="btn btn-outline-danger btn-sm" title="Eliminar Tarea"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </span>
+                <!-- Acción de Colaborador (Marcar completada, solo si asignado, no completada y proyecto no cerrado) -->
+                <span sec:authorize="hasAuthority('COLABORADOR')" th:if="${task.assignedUser?.email == #authentication.name and task.status != T(com.ejemplo.gestionproyectos.model.TaskStatus).COMPLETADA and !project.closed}">
+                           <form th:action="@{/tasks/{taskId}/complete(taskId=${task.id})}" method="post" class="d-inline">
+                               <button type="submit" class="btn btn-outline-primary btn-sm" title="Marcar como Completada"><i class="bi bi-check-lg"></i></button>
+                           </form>
+                     </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</section>
 </body>
 </html>

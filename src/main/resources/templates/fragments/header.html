@@ -1,10 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-$END$
+<!--/* Fragmento del Header */-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4" th:fragment="header">
+  <div class="container-fluid">
+    <a class="navbar-brand" th:href="@{/home}">Formacom Trello</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Menú Izquierda (Principal) -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <a class="nav-link" th:href="@{/home}"><i class="bi bi-house-door"></i> Inicio</a>
+        </li>
+        <!-- Menú Gestor -->
+        <li class="nav-item dropdown" sec:authorize="hasAuthority('GESTOR')">
+          <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-briefcase"></i> Gestión
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="managerDropdown">
+            <li><a class="dropdown-item" th:href="@{/manager/dashboard}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a class="dropdown-item" th:href="@{/manager/project-list}"><i class="bi bi-list-task"></i> Mis Proyectos</a></li>
+            <li><a class="dropdown-item" th:href="@{/projects/new}"><i class="bi bi-plus-circle"></i> Nuevo Proyecto</a></li>
+          </ul>
+        </li>
+        <!-- Menú Colaborador -->
+        <li class="nav-item dropdown" sec:authorize="hasAuthority('COLABORADOR')">
+          <a class="nav-link dropdown-toggle" href="#" id="collaboratorDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-people"></i> Colaboración
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="collaboratorDropdown">
+            <li><a class="dropdown-item" th:href="@{/collaborator/dashboard}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a class="dropdown-item" th:href="@{/collaborator/project-list}"><i class="bi bi-diagram-3"></i> Mis Proyectos</a></li>
+            <!-- Podrías añadir un enlace a 'Mis Tareas' aquí -->
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Menú Derecha (Usuario y Login/Logout) -->
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle"></i> <span sec:authorize="isAuthenticated()" th:text="${userName}"></span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" th:href="@{/user/profile}"><i class="bi bi-person-lines-fill"></i> Mi Perfil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
+              </form>
+            </li>
+          </ul>
+        </li>
+        <!-- Botones Login/Register si no está autenticado -->
+        <li class="nav-item" sec:authorize="!isAuthenticated()">
+          <a class="btn btn-outline-light btn-sm me-2" th:href="@{/login}">Iniciar Sesión</a>
+        </li>
+        <li class="nav-item" sec:authorize="!isAuthenticated()">
+          <a class="btn btn-warning btn-sm" th:href="@{/register}">Registrarse (Gestor)</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 </body>
 </html>

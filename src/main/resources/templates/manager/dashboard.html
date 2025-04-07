@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Dashboard Gestor</title>
 </head>
 <body>
-$END$
+<section layout:fragment="content">
+  <h1>Dashboard del Gestor</h1>
+  <p>Bienvenido/a, <span th:text="${userName}">Gestor</span>.</p>
+  <hr>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Mis Proyectos</h5>
+          <p class="card-text">Ver y gestionar los proyectos que has creado.</p>
+          <a th:href="@{/manager/project-list}" class="btn btn-primary"><i class="bi bi-list-task"></i> Ver Mis Proyectos</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Nuevo Proyecto</h5>
+          <p class="card-text">Iniciar un nuevo proyecto y asignar tareas.</p>
+          <a th:href="@{/projects/new}" class="btn btn-success"><i class="bi bi-plus-circle"></i> Crear Proyecto</a>
+        </div>
+      </div>
+    </div>
+    <!-- Puedes añadir más tarjetas o información relevante aquí -->
+    <!-- Por ejemplo: Tareas recientes, Notificaciones, etc. -->
+  </div>
+
+  <!-- Nueva fila para la sección de colaboradores -->
+  <div class="row g-3 mt-3">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Gestión de Colaboradores</h5>
+          <p class="card-text">Añadir o administrar colaboradores para tus proyectos.</p>
+          <a th:href="@{/manager/collaborators}" class="btn btn-info"><i class="bi bi-person-plus"></i> Gestionar Colaboradores</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
 </body>
 </html>

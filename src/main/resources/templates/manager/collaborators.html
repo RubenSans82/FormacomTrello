@@ -3,18 +3,21 @@
       layout:decorate="~{layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-  <title>Registro de Gestor</title>
+  <title>Registro de Colaborador</title>
 </head>
 <body>
 <section layout:fragment="content">
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-7">
-      <h1 class="text-center mb-4">Registro de Gestor</h1>
+      <h1 class="text-center mb-4">Registro de Colaborador</h1>
 
+      <!-- Mensaje de éxito -->
+      <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+      
       <!-- Mensaje de error general -->
       <div th:if="${registrationError}" class="alert alert-danger" role="alert" th:text="${registrationError}"></div>
 
-      <form th:action="@{/process-register}" th:object="${userDto}" method="post">
+      <form th:action="@{/invite-collaborator}" th:object="${userDto}" method="post">
         <div class="row g-3">
           <div class="col-md-6 mb-3">
             <label for="nombre" class="form-label">Nombre:</label>
@@ -29,22 +32,22 @@
         </div>
 
         <div class="mb-3">
-          <label for="email" class="form-label">Email (será tu usuario):</label>
+          <label for="email" class="form-label">Email (será el usuario del colaborador):</label>
           <input type="email" id="email" th:field="*{email}" class="form-control" required />
           <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error en email</div>
         </div>
 
         <div class="row g-3">
           <div class="col-md-6 mb-3">
-            <label for="password" class="form-label">Contraseña:</label>
+            <label for="password" class="form-label">Contraseña inicial:</label>
             <input type="password" id="password" th:field="*{password}" class="form-control" required />
             <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error en contraseña</div>
+            <small class="form-text text-muted">El colaborador deberá cambiar esta contraseña en su primer inicio de sesión.</small>
           </div>
           <div class="col-md-6 mb-3">
             <label for="confirmPassword" class="form-label">Confirmar Contraseña:</label>
             <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required />
             <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Error en confirmación</div>
-            <!-- Añadir validación de coincidencia si es necesario -->
           </div>
         </div>
 
@@ -55,10 +58,9 @@
         </div>
 
         <div class="d-grid">
-          <button type="submit" class="btn btn-primary">Registrarse</button>
+          <button type="submit" class="btn btn-primary">Registrar Colaborador</button>
         </div>
       </form>
-      <p class="mt-3 text-center">¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión</a></p>
     </div>
   </div>
 </section>

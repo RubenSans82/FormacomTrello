@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Mis Proyectos</title>
 </head>
 <body>
-$END$
+<section layout:fragment="content">
+    <h1>Mis Proyectos</h1>
+    <hr>
+
+    <div class="mb-3">
+        <a th:href="@{/projects/new}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Crear Nuevo Proyecto
+        </a>
+    </div>
+
+    <div class="alert alert-info" th:if="${#lists.isEmpty(projects)}">
+        No tienes proyectos creados. ¡Crea tu primer proyecto!
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${!#lists.isEmpty(projects)}">
+        <div class="col" th:each="project : ${projects}">
+            <div class="card h-100" th:classappend="${project.closed ? 'bg-light' : ''}">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${project.title}">Título del Proyecto</h5>
+                    <p class="card-text" th:text="${project.description}">Descripción del proyecto...</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <span th:text="${#temporals.format(project.createdAt, 'dd/MM/yyyy')}">01/01/2023</span>
+                            <span class="badge bg-secondary" th:if="${project.closed}">Cerrado</span>
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <a th:href="@{'/projects/' + ${project.id}}" class="btn btn-sm btn-outline-primary">Ver Detalles</a>
+                    <a th:href="@{'/projects/' + ${project.id} + '/edit'}" class="btn btn-sm btn-outline-secondary" 
+                       th:if="${!project.closed}">Editar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 </body>
 </html>

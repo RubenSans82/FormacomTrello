@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Dashboard Colaborador</title>
 </head>
 <body>
-$END$
+<section layout:fragment="content">
+  <h1>Dashboard del Colaborador</h1>
+  <p>Bienvenido/a, <span th:text="${#authentication.principal.username}">Colaborador</span>.</p>
+  <hr>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Mis Tareas</h5>
+          <p class="card-text">Ver y gestionar las tareas que te han asignado.</p>
+          <a th:href="@{/collaborator/tasks}" class="btn btn-primary"><i class="bi bi-list-task"></i> Ver Mis Tareas</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Mis Proyectos</h5>
+          <p class="card-text">Ver los proyectos en los que participas.</p>
+          <a th:href="@{/projects/collaborator/list}" class="btn btn-info"><i class="bi bi-kanban"></i> Ver Proyectos</a>
+        </div>
+      </div>
+    </div>
+    <!-- Puedes añadir más tarjetas o información relevante aquí -->
+  </div>
+
+</section>
 </body>
 </html>

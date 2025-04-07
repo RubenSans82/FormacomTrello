@@ -1,10 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Mi Perfil</title>
 </head>
 <body>
-$END$
+<section layout:fragment="content">
+  <h1>Mi Perfil</h1>
+  <hr>
+
+  <div class="row">
+    <div class="col-md-4 text-center mb-4">
+      <!-- Mostrar foto actual -->
+      <img th:src="${userProfileDto.fotoUrl ?: '/images/default-avatar.png'}" alt="Foto de perfil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+      <h5 th:text="${userProfileDto.nombre} + ' ' + ${userProfileDto.apellidos}">Nombre Usuario</h5>
+      <p class="text-muted" th:text="${userEmail}">email@ejemplo.com</p>
+      <span class="badge bg-info text-dark" th:text="${userRole}">ROL</span>
+    </div>
+
+    <div class="col-md-8">
+      <h4>Editar Información</h4>
+
+      <!-- Mensaje de error general -->
+      <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
+      <form th:action="@{/user/profile/update}" th:object="${userProfileDto}" method="post">
+
+        <div class="row g-3">
+          <div class="col-md-6 mb-3">
+            <label for="nombre" class="form-label">Nombre:</label>
+            <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error nombre</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="apellidos" class="form-label">Apellidos:</label>
+            <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}">Error apellidos</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="telefono" class="form-label">Teléfono:</label>
+          <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" />
+          <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">Error telefono</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="fotoUrl" class="form-label">URL de la Foto de Perfil:</label>
+          <input type="url" id="fotoUrl" th:field="*{fotoUrl}" class="form-control" placeholder="https://ejemplo.com/imagen.jpg"/>
+          <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('fotoUrl')}" th:errors="*{fotoUrl}">Error URL foto</div>
+          <div class="form-text">Pega aquí la URL de una imagen alojada externamente.</div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
+        </div>
+      </form>
+
+      <!-- Sección para cambiar contraseña (si se implementa) -->
+      <hr class="my-4">
+      <h4>Cambiar Contraseña</h4>
+      <p><a href="/user/change-password" class="btn btn-outline-secondary disabled">Cambiar mi Contraseña</a> (Funcionalidad no implementada)</p>
+
+
+    </div>
+  </div>
+
+
+</section>
 </body>
 </html>

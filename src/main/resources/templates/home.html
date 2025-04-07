@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Inicio - Gestión de Proyectos</title>
 </head>
 <body>
-$END$
+<section layout:fragment="content">
+  <div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-5">
+      <h1 class="display-5 fw-bold">¡Bienvenido/a a Formacom Trello!</h1>
+      <p class="col-md-8 fs-4">Tu plataforma para gestionar proyectos, tareas y colaboradores.</p>
+
+        Por favor, <a th:href="@{/login}">inicia sesión</a> para continuar o <a th:href="@{/register}">regístrate como gestor</a>.
+      </p>
+
+    </div>
+  </div>
+
+  <!-- Podrías añadir contenido genérico aquí si home no siempre redirige -->
+  <div class="row align-items-md-stretch">
+    <div class="col-md-6 mb-3" sec:authorize="hasAuthority('GESTOR')">
+      <div class="h-100 p-5 text-white bg-dark rounded-3">
+        <h2>Gestiona tus Proyectos</h2>
+        <p>Crea, edita, asigna tareas y sigue el progreso de todos tus proyectos desde un solo lugar.</p>
+        <a class="btn btn-outline-light" type="button" th:href="@{/manager/project-list}">Ir a Mis Proyectos</a>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3" sec:authorize="hasAuthority('COLABORADOR')">
+      <div class="h-100 p-5 bg-light border rounded-3">
+        <h2>Colabora Eficazmente</h2>
+        <p>Accede a los proyectos donde participas, revisa tus tareas asignadas y actualiza su estado.</p>
+        <a class="btn btn-outline-secondary" type="button" th:href="@{/collaborator/project-list}">Ver Proyectos</a>
+      </div>
+    </div>
+  </div>
+
+
+</section>
 </body>
 </html>

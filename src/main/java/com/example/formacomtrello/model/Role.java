@@ -1,4 +1,6 @@
 package com.example.formacomtrello.model;
 
-public class Role {
+public enum Role {
+    GESTOR,
+    COLABORADOR
 }
