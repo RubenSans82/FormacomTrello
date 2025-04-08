@@ -182,7 +182,7 @@ public class ProjectController {
         
         // 3. Verificar si el usuario tiene acceso
         if (!projectOpt.isPresent()) {
-            return "error/404"; // Proyecto no encontrado o sin acceso
+            return "error"; // Proyecto no encontrado o sin acceso
         }
         
         Project project = projectOpt.get();
@@ -192,10 +192,10 @@ public class ProjectController {
         model.addAttribute("userRole", userRole);
         model.addAttribute("isOwner", project.getOwner().getEmail().equals(userEmail));
         
-        // 5. Cargar tareas asociadas al proyecto - LÍNEA CORREGIDA
+        // 5. Cargar tareas asociadas al proyecto y asegurarse de que estén ordenadas
         List<Task> tasks = taskService.findTasksByProjectId(projectId, userEmail);
         model.addAttribute("tasks", tasks);
-        
+
         // 6. Los colaboradores ya están en el proyecto
         model.addAttribute("collaborators", project.getCollaborators());
         

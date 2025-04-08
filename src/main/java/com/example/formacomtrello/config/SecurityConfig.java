@@ -48,11 +48,11 @@ public class SecurityConfig { // YA NO extiende WebSecurityConfigurerAdapter
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/", "/home", "/register", "/login", "/process-register", "/set-password", "/process-set-password").permitAll()
                         // Rutas específicas de Gestor
-                        .requestMatchers("/manager/**", "/projects/new", "/projects/*/edit", "/projects/*/invite", "/projects/*/tasks/new", "/tasks/*/edit", "/tasks/*/delete").hasAuthority("GESTOR")
+                        .requestMatchers("/projects/new", "/projects/*/edit", "/projects/*/invite", "/projects/*/tasks/new", "/tasks/*/edit", "/tasks/*/delete").hasAuthority("GESTOR")
                         // Rutas específicas de Colaborador
-                        .requestMatchers("/collaborator/**", "/tasks/*/complete", "/tasks/*/comment").hasAuthority("COLABORADOR")
+                        .requestMatchers("/collaborator/**", "/tasks/*/complete").hasAuthority("COLABORADOR")
                         // Rutas que requieren autenticación (ambos roles pueden ver detalles)
-                        .requestMatchers("/projects/**", "/tasks/**", "/user/profile").authenticated()
+                        .requestMatchers("/manager/**", "/projects/**", "/tasks/**", "/user/profile", "/tasks/*/comment").authenticated()
                         // Cualquier otra petición requiere autenticación
                         .anyRequest().authenticated()
                 )

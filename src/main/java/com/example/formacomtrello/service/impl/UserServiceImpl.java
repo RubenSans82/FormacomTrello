@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
         manager.setApellidos(dto.getApellidos());
         manager.setTelefono(dto.getTelefono());
         manager.setRole(Role.GESTOR);
-        manager.setFirstLogin(false); // Los gestores se registran con contraseña
         // manager.setFotoUrl(dto.getFotoUrl()); // Si se incluye
         return userRepository.save(manager);
     }
@@ -54,8 +53,7 @@ public class UserServiceImpl implements UserService {
         collaborator.setApellidos(dto.getApellidos());
         collaborator.setTelefono(dto.getTelefono());
         collaborator.setRole(Role.COLABORADOR);
-        collaborator.setFirstLogin(true); // Marcar para que configure su contraseña en primer login
-        
+
         return userRepository.save(collaborator);
     }
 
@@ -81,14 +79,16 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void setPasswordForCollaborator(String email, String newPassword) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado")); // Mejor excepción personalizada
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (user.getRole() != Role.COLABORADOR || !user.isFirstLogin()) {
-            throw new RuntimeException("Acción no permitida para este usuario"); // Mejor excepción personalizada
-        }
+        // Eliminar esta condición:
+        // if (user.getRole() != Role.COLABORADOR || !user.isFirstLogin()) {
+        //     throw new RuntimeException("Acción no permitida para este usuario");
+        // }
 
         user.setPassword(passwordEncoder.encode(newPassword));
-        user.setFirstLogin(false); // Ya estableció contraseña
+        // Eliminar esta línea:
+        // user.setFirstLogin(false);
         userRepository.save(user);
     }
 

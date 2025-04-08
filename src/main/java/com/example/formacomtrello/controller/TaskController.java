@@ -331,44 +331,47 @@ public class TaskController {
                              @Valid @ModelAttribute("newComment") CommentDto commentDto, // Usar un DTO para el comentario
                              BindingResult bindingResult,
                              Authentication authentication,
-                             RedirectAttributes redirectAttributes,
-                             Model model) { // Model por si hay error de validación
+                             RedirectAttributes redirectAttributes) {
 
         String userEmail = authentication.getName();
 
-        // --- Re-validar Acceso y Estado antes de procesar ---
-        Task task = null;
+        // Si hay errores de validación, redirigir con mensaje de error
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("commentError", "El contenido del comentario no puede estar vacío.");
+            return "redirect:/tasks/" + taskId;
+        }
+
         try {
-            task = taskService.findTaskById(taskId, userEmail)
-                    .orElseThrow(() -> new ResourceNotFoundException("Tarea no encontrada o sin acceso."));
-            if (task.getProject().isClosed()) {
-                redirectAttributes.addFlashAttribute("errorMessage", "No se puede comentar en tareas de un proyecto cerrado.");
+            // Validamos manualmente que el contenido no esté vacío (doble verificación)
+            if (commentDto.getContent() == null || commentDto.getContent().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("commentError", "El contenido del comentario no puede estar vacío.");
                 return "redirect:/tasks/" + taskId;
             }
-        } catch (ResourceNotFoundException | UnauthorizedAccessException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al comentar: " + e.getMessage());
-            return "redirect:/manager/dashboard"; // O a donde sea apropiado
-        }
-        // --- Fin Re-validación ---
-
-        if (bindingResult.hasErrors()) {
-            // Si el DTO tiene validaciones (@NotBlank, etc.) y fallan
-            redirectAttributes.addFlashAttribute("commentError", "El contenido del comentario no puede estar vacío."); // Mensaje genérico
-            // Opcionalmente, recargar la vista de detalles con el error:
-            // return viewTaskDetails(taskId, model, authentication); // Necesitaría pasar el error al modelo
-            return "redirect:/tasks/" + taskId; // Más simple redirigir
-        }
-
-
-        try {
+            
+            // Intentamos añadir el comentario
             taskService.addCommentToTask(taskId, commentDto, userEmail);
-            redirectAttributes.addFlashAttribute("successMessage", "Comentario añadido.");
-        } catch (ResourceNotFoundException | UnauthorizedAccessException | IllegalStateException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al añadir comentario: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("successMessage", "Comentario añadido exitosamente.");
+            
+        } catch (ResourceNotFoundException e) {
+            // La tarea o el usuario no existen
+            redirectAttributes.addFlashAttribute("errorMessage", "No se encontró la tarea: " + e.getMessage());
+            return "redirect:/collaborator/dashboard"; // Redirección a un lugar seguro
+            
+        } catch (UnauthorizedAccessException e) {
+            // El usuario no tiene acceso al proyecto
+            redirectAttributes.addFlashAttribute("errorMessage", "No tienes permiso para comentar en esta tarea: " + e.getMessage());
+            return "redirect:/collaborator/dashboard"; // Redirección a un lugar seguro
+            
+        } catch (IllegalStateException e) {
+            // Proyecto cerrado u otro problema de estado
+            redirectAttributes.addFlashAttribute("errorMessage", "No se puede añadir el comentario: " + e.getMessage());
+            
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error inesperado al añadir comentario.");
+            // Cualquier otra excepción inesperada
+            redirectAttributes.addFlashAttribute("errorMessage", "Error inesperado al añadir comentario: " + e.getMessage());
         }
 
-        return "redirect:/tasks/" + taskId; // Volver a la vista de detalles de la tarea
+        // Siempre intentamos volver a la página de la tarea
+        return "redirect:/tasks/" + taskId;
     }
 }

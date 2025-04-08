@@ -215,22 +215,38 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Comment addCommentToTask(Long taskId, CommentDto commentDto, String userEmail) {
-        User author = findUserOrThrow(userEmail);
-        Task task = findTaskOrThrow(taskId);
+        // Buscar la tarea
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tarea no encontrada"));
+
+        // Buscar usuario
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        // Verificar que el usuario es colaborador o gestor del proyecto
         Project project = task.getProject();
-        // Verificar que el usuario tiene acceso al proyecto (es gestor o colaborador)
-        verifyProjectAccess(project, author);
-        if (project.isClosed()){
-            throw new IllegalStateException("No se puede comentar en tareas de un proyecto cerrado.");
+        boolean isCollaborator = project.getCollaborators().stream()
+                .anyMatch(c -> c.getEmail().equals(userEmail));
+        boolean isManager = project.getOwner().getEmail().equals(userEmail);
+
+        if (!isCollaborator && !isManager) {
+            throw new UnauthorizedAccessException("No puedes comentar en esta tarea");
         }
 
+        // Verificar que el proyecto no está cerrado
+        if (project.isClosed()) {
+            throw new IllegalStateException("No se puede comentar en tareas de un proyecto cerrado");
+        }
+
+        // Crear y guardar comentario
         Comment comment = new Comment();
-        comment.setTask(task);
-        comment.setAuthor(author);
         comment.setContent(commentDto.getContent());
+        comment.setTask(task);
+        comment.setAuthor(user);
         comment.setCreatedAt(LocalDateTime.now());
 
-        return commentRepository.save(comment);
+        commentRepository.save(comment);
+        return comment;
     }
 
     @Override

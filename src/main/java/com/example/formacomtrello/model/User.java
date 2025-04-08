@@ -50,9 +50,6 @@ public class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private Set<Comment> comments = new HashSet<>();
 
-    // Flag para indicar si es la primera vez que inicia sesión (para colaboradores)
-    private boolean firstLogin = true;
-
     public User() {
     }
 
@@ -144,11 +141,4 @@ public class User {
         this.comments = comments;
     }
 
-    public boolean isFirstLogin() {
-        return firstLogin;
-    }
-
-    public void setFirstLogin(boolean firstLogin) {
-        this.firstLogin = firstLogin;
-    }
 }

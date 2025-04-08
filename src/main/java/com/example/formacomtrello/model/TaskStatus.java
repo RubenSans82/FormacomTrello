@@ -14,4 +14,8 @@ public enum TaskStatus {
         this.displayName = displayName;
     }
 
+    // Agregar método getter explícito para displayName
+    public String getDisplayName() {
+        return displayName;
+    }
 }

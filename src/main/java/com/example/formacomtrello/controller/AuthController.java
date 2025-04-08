@@ -65,10 +65,11 @@ public class AuthController {
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            if (user.isFirstLogin() && user.getRole() == com.example.formacomtrello.model.Role.COLABORADOR) {
-                // Redirigir a la página de establecer contraseña
-                return "redirect:/set-password";
-            }
+            // Eliminar esta condición:
+            // if (user.isFirstLogin() && user.getRole() == Role.COLABORADOR) {
+            //     return "redirect:/set-password";
+            // }
+
             // Redirigir al dashboard correspondiente
             if (user.getRole() == com.example.formacomtrello.model.Role.GESTOR) {
                 return "redirect:/manager/dashboard";
@@ -76,7 +77,6 @@ public class AuthController {
                 return "redirect:/collaborator/dashboard";
             }
         }
-        // Caso raro, usuario autenticado pero no encontrado en DB?
         return "redirect:/login?error=true";
     }
 
@@ -144,19 +144,20 @@ public class AuthController {
 
     @GetMapping("/set-password")
     public String showSetPasswordForm(Model model) {
-        // Necesita el email del usuario que debe establecer la contraseña
-        // Esto debería venir de la redirección de /home o de un link especial
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) return "redirect:/login"; // No debería llegar aquí sin autenticar
+        if (auth == null || !auth.isAuthenticated()) return "redirect:/login";
 
         String email = auth.getName();
-        Optional<User> userOpt = userService.findByEmail(email);
-        if (userOpt.isPresent() && userOpt.get().isFirstLogin()) {
-            model.addAttribute("email", email);
-            return "auth/set-password";
-        }
-        // Si no es firstLogin o no existe, redirigir
-        return "redirect:/home";
+        model.addAttribute("email", email);
+        return "auth/set-password";
+
+        // Eliminar esta validación:
+        // Optional<User> userOpt = userService.findByEmail(email);
+        // if (userOpt.isPresent() && userOpt.get().isFirstLogin()) {
+        //     model.addAttribute("email", email);
+        //     return "auth/set-password";
+        // }
+        // return "redirect:/home";
     }
 
     @PostMapping("/process-set-password")

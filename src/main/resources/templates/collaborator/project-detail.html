@@ -90,7 +90,7 @@
             <td th:text="${task.dueDate != null ? #temporals.format(task.dueDate, 'dd/MM/yyyy') : '-'}">Fecha</td>
             <td>
                     <span th:text="${task.status.displayName}"
-                          th:classappend="${task.status == T(com.ejemplo.gestionproyectos.model.TaskStatus).COMPLETADA ? 'badge bg-success' : (task.status == T(com.ejemplo.gestionproyectos.model.TaskStatus).PENDIENTE ? 'badge bg-warning text-dark' : 'badge bg-info text-dark')}">
+                          th:classappend="${task.status == T(com.example.formacomtrello.model.TaskStatus).COMPLETADA ? 'badge bg-success' : (task.status == T(com.example.formacomtrello.model.TaskStatus).PENDIENTE ? 'badge bg-warning text-dark' : 'badge bg-info text-dark')}">
                     </span>
             </td>
             <td>
@@ -103,7 +103,7 @@
                         </form>
                     </span>
                 <!-- Acción de Colaborador (Marcar completada, solo si asignado, no completada y proyecto no cerrado) -->
-                <span sec:authorize="hasAuthority('COLABORADOR')" th:if="${task.assignedUser?.email == #authentication.name and task.status != T(com.ejemplo.gestionproyectos.model.TaskStatus).COMPLETADA and !project.closed}">
+                <span sec:authorize="hasAuthority('COLABORADOR')" th:if="${task.assignedUser?.email == #authentication.name and task.status != T(com.example.formacomtrello.model.TaskStatus).COMPLETADA and !project.closed}">
                            <form th:action="@{/tasks/{taskId}/complete(taskId=${task.id})}" method="post" class="d-inline">
                                <button type="submit" class="btn btn-outline-primary btn-sm" title="Marcar como Completada"><i class="bi bi-check-lg"></i></button>
                            </form>

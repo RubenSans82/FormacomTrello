@@ -1,23 +1,15 @@
 package com.example.formacomtrello.dto;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-//@Data
-//NoArgsConstructor
-//@AllArgsConstructor
 public class CommentDto {
 
-    // No incluimos id, author, task, createdAt.
-
-    @NotBlank(message = "El contenido del comentario no puede estar vacío.")
-    @Size(min = 1, max = 1000, message = "El comentario debe tener entre 1 y 1000 caracteres.")
+    @NotBlank(message = "El comentario no puede estar vacío")
+    @Size(max = 1000, message = "El comentario no puede exceder los 1000 caracteres")
     private String content;
 
+    // Constructor vacío correcto
     public CommentDto() {
     }
 
