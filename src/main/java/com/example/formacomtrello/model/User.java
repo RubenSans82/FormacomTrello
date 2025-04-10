@@ -32,6 +32,7 @@ public class User {
 
     private String telefono;
 
+    @Column(name = "foto_url")
     private String fotoUrl; // Ruta o URL de la foto
 
     @Enumerated(EnumType.STRING)

@@ -45,6 +45,11 @@ public class UserRegistrationDto {
     @Size(max = 20, message = "El teléfono no debe exceder los 20 caracteres.")
     private String telefono;
 
+    // fotourl
+    // Si decides incluirlo, puedes añadir una validación de URL.
+    @Size(max = 255, message = "La URL de la foto no debe exceder los 255 caracteres.")
+    private String fotoUrl;
+
     // No incluimos rol aquí, se asume GESTOR al registrarse mediante este DTO.
     // No incluimos fotoUrl, id, firstLogin, etc.
 
@@ -99,5 +104,8 @@ public class UserRegistrationDto {
         this.telefono = telefono;
     }
 
+    public String getFotoUrl() { return fotoUrl; }
+
+    public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
 
 }

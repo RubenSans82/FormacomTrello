@@ -42,6 +42,7 @@ public class AuthController {
         }
         if (logout != null) {
             model.addAttribute("logoutMessage", "Has cerrado sesión correctamente.");
+            return "redirect:/home";
         }
 
         // Comprobar si necesita establecer contraseña

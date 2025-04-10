@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 <head>
     <title>Mis Proyectos (Colaborador)</title>
 </head>
 <body>
 <section layout:fragment="content">
-    <h1>Proyectos en los que Colaboro</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Proyectos en los que Colaboro</h1>
+        <a sec:authorize="hasAuthority('COLABORADOR')" th:href="@{/collaborator/dashboard}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Volver a Dashboard</a>
+    </div>
 
-    <div th:if="${#lists.isEmpty(projects)}" class="alert alert-info" role="alert">
+        <div th:if="${#lists.isEmpty(projects)}" class="alert alert-info" role="alert">
         Aún no te han invitado a colaborar en ningún proyecto.
     </div>
 

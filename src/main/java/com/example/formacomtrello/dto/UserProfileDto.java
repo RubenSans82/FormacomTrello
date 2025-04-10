@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-// Puedes añadir @URL para fotoUrl si quieres validar el formato de URL.
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * DTO para la actualización del perfil de un usuario existente.
@@ -33,9 +33,19 @@ public class UserProfileDto {
     // URL de la foto, podría ser opcional
     @Size(max = 512, message = "La URL de la foto no debe exceder los 512 caracteres.")
     private String fotoUrl;
-
-    // NO incluimos id, email, password, role, firstLogin
-
+    
+    // Archivo de foto subido
+    private MultipartFile fotoFile;
+    
+    // Contraseña actual (necesaria para cambiar la contraseña)
+    private String currentPassword;
+    
+    // Contraseña nueva - Quitamos la validación de tamaño mínimo aquí
+    // para permitir valores vacíos cuando no se desea cambiar la contraseña
+    private String password;
+    
+    // Confirmación de la nueva contraseña
+    private String confirmPassword;
 
     public UserProfileDto() {
     }
@@ -45,8 +55,10 @@ public class UserProfileDto {
         this.apellidos = apellidos;
         this.telefono = telefono;
         this.fotoUrl = fotoUrl;
+        this.password = null;
+        this.currentPassword = null;
+        this.confirmPassword = null;
     }
-
 
     public String getNombre() {
         return nombre;
@@ -78,5 +90,37 @@ public class UserProfileDto {
 
     public void setFotoUrl(String fotoUrl) {
         this.fotoUrl = fotoUrl;
+    }
+    
+    public MultipartFile getFotoFile() {
+        return fotoFile;
+    }
+    
+    public void setFotoFile(MultipartFile fotoFile) {
+        this.fotoFile = fotoFile;
+    }
+    
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+    
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+    
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 }

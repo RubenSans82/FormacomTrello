@@ -214,6 +214,26 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    public Task markTaskAsAccepted(Long taskId, String collaboratorEmail) {
+        User collaborator = findUserOrThrow(collaboratorEmail);
+        if (collaborator.getRole() != Role.COLABORADOR) {
+            throw new UnauthorizedAccessException("Solo colaboradores pueden aceptar tareas.");
+        }
+        Task task = findTaskOrThrow(taskId);
+        if (task.getProject().isClosed()){
+            throw new IllegalStateException("El proyecto de esta tarea está cerrado.");
+        }
+
+        if (!task.getAssignedUser().equals(collaborator)) {
+            throw new UnauthorizedAccessException("No eres el usuario asignado para completar esta tarea.");
+        }
+
+        task.setStatus(TaskStatus.EN_PROGRESO);
+        return taskRepository.save(task);
+    }
+
+    @Override
+    @Transactional
     public Comment addCommentToTask(Long taskId, CommentDto commentDto, String userEmail) {
         // Buscar la tarea
         Task task = taskRepository.findById(taskId)
@@ -279,4 +299,6 @@ public class TaskServiceImpl implements TaskService {
         // El repositorio ya los devuelve ordenados por fecha ASC
         return commentRepository.findByTaskIdOrderByCreatedAtAsc(taskId);
     }
+
+
 }

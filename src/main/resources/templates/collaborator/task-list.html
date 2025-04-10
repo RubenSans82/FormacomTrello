@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <title>Mis Tareas</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="col">
+                    <h1>Mis Tareas</h1>
+                </div>
+                <a sec:authorize="hasAuthority('COLABORADOR')" th:href="@{/collaborator/dashboard}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Volver a Dashboard</a>
+
+            </div>
+            <!-- Tabla de tareas -->
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Lista de tareas</h5>
+                            <span class="badge bg-primary" th:text="${tasks.size() + ' tareas'}"></span>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${tasks.size() == 0}" class="alert alert-info">
+                                No tienes tareas asignadas. Cuando un gestor te asigne una tarea, aparecerá aquí.
+                            </div>
+
+                            <div th:if="${tasks.size() != 0}" class="table-responsive">
+                                <table class="table table-hover table-striped">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Título</th>
+                                            <th>Proyecto</th>
+                                            <th>Estado</th>
+                                            <th>Fecha límite</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="task : ${tasks}">
+                                            <td>
+                                                <span th:text="${task.title}"></span>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/projects/{id}(id=${task.project.id})}"
+                                                   th:text="${task.project.title}"
+                                                   class="text-decoration-none"></a>
+                                            </td>
+                                            <td>
+                                                <span th:switch="${task.status.name()}">
+                                                    <span th:case="'PENDIENTE'" class="badge bg-danger" th:text="${task.status.displayName}"></span>
+                                                    <span th:case="'EN_PROGRESO'" class="badge bg-primary" th:text="${task.status.displayName}"></span>
+                                                    <span th:case="'COMPLETADA'" class="badge bg-success" th:text="${task.status.displayName}"></span>
+                                                    <span th:case="*" class="badge bg-warning" th:text="${task.status}"></span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span th:if="${task.dueDate != null}"
+                                                      th:text="${#temporals.format(task.dueDate, 'dd/MM/yyyy')}"></span>
+                                                <span th:unless="${task.dueDate != null}">Sin fecha</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a th:href="@{/tasks/{id}(id=${task.id})}"
+                                                       class="btn btn-outline-primary"
+                                                       title="Ver detalles">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                    <form  th:if="${task.assignedUser?.email == #authentication.name and task.status.name() == 'PENDIENTE'}" th:action="@{/tasks/{taskId}/accepted(taskId=${task.id})}" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-success btn-sm" title="Marcar como Aceptada">
+                                                            <i class="bi bi-check2-circle"></i>
+                                                        </button>
+                                                    </form>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

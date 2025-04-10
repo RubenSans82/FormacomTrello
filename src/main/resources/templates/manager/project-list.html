@@ -29,7 +29,8 @@
                     <p class="card-text">
                         <small class="text-muted">
                             <span th:text="${#temporals.format(project.createdAt, 'dd/MM/yyyy')}">01/01/2023</span>
-                            <span class="badge bg-secondary" th:if="${project.closed}">Cerrado</span>
+                            <span class="badge bg-danger" th:if="${project.closed}">Cerrado</span>
+                            <span class="badge bg-success" th:if="${!project.closed}">Activo</span>
                         </small>
                     </p>
                 </div>

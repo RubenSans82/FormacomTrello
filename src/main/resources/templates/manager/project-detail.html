@@ -12,7 +12,7 @@
     <h1 th:text="${project.title}">Título Proyecto</h1>
     <div>
              <span th:text="${project.closed ? 'Cerrado' : 'Activo'}"
-                   th:classappend="${project.closed ? 'badge bg-secondary fs-5' : 'badge bg-success fs-5'}">
+                   th:classappend="${project.closed ? 'badge bg-secondary fs-7' : 'badge bg-success fs-7'}">
                    Estado
              </span>
       <!-- Botones de acción para el Gestor -->
@@ -72,7 +72,7 @@
         <tr>
           <th>Título</th>
           <th>Asignada a</th>
-          <th>Vencimiento</th>
+          <th>Fecha límite</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
@@ -85,8 +85,11 @@
           <td th:text="${task.assignedUser != null ? task.assignedUser.nombre + ' ' + task.assignedUser.apellidos : 'Sin asignar'}">Usuario Asignado</td>
           <td th:text="${task.dueDate != null ? #temporals.format(task.dueDate, 'dd/MM/yyyy') : '-'}">Fecha</td>
           <td>
-            <span th:text="${task.status.displayName}"
-                  th:classappend="${task.status == T(com.example.formacomtrello.model.TaskStatus).COMPLETADA ? 'badge bg-success' : (task.status == T(com.example.formacomtrello.model.TaskStatus).PENDIENTE ? 'badge bg-warning text-dark' : 'badge bg-info text-dark')}">
+            <span th:switch="${task.status.name()}">
+              <span th:case="'PENDIENTE'" class="badge bg-danger" th:text="${task.status.displayName}"></span>
+              <span th:case="'EN_PROGRESO'" class="badge bg-primary" th:text="${task.status.displayName}"></span>
+              <span th:case="'COMPLETADA'" class="badge bg-success" th:text="${task.status.displayName}"></span>
+              <span th:case="*" class="badge bg-warning" th:text="${task.status}"></span>
             </span>
           </td>
           <td>

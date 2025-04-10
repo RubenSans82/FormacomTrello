@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         manager.setApellidos(dto.getApellidos());
         manager.setTelefono(dto.getTelefono());
         manager.setRole(Role.GESTOR);
-        // manager.setFotoUrl(dto.getFotoUrl()); // Si se incluye
+        manager.setFotoUrl(dto.getFotoUrl()); // Si se incluye
         return userRepository.save(manager);
     }
 

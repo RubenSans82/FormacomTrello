@@ -1,8 +1,11 @@
 package com.example.formacomtrello.controller;
 
 import com.example.formacomtrello.model.Project;
+import com.example.formacomtrello.model.Task;
+import com.example.formacomtrello.model.TaskStatus;
 import com.example.formacomtrello.model.User;
 import com.example.formacomtrello.service.ProjectService;
+import com.example.formacomtrello.service.TaskService;
 import com.example.formacomtrello.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +27,9 @@ public class DashboardController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private TaskService taskService;
 
     /**
      * Muestra el dashboard del gestor
@@ -68,4 +74,17 @@ public class DashboardController {
         model.addAttribute("projects", projects);
         return "manager/project-list";
     }
+
+    //Redirige a la vista de tareas del colaborador
+    @GetMapping("/collaborator/tasks")
+    @PreAuthorize("hasAuthority('COLABORADOR')")
+    public String collaboratorTasks(Model model, Authentication auth) {
+        String userEmail = auth.getName();
+        List<Task> tasks = taskService.findTasksByAssignedUser(userEmail);
+        tasks.forEach(task -> task.setStatus(TaskStatus.valueOf(task.getStatus().name())));
+        model.addAttribute("tasks", tasks);
+        return "collaborator/task-list";
+    }
+
+
 }

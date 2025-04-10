@@ -5,16 +5,16 @@
 <!--/* Fragmento del Header */-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4" th:fragment="header">
   <div class="container-fluid">
-    <a class="navbar-brand" th:href="@{/home}">Formacom Trello</a>
+    <span class="navbar-brand">Formacom Trello</span>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <!-- Menú Izquierda (Principal) -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item" sec:authorize="isAuthenticated()">
-          <a class="nav-link" th:href="@{/home}"><i class="bi bi-house-door"></i> Inicio</a>
-        </li>
+<!--        <li class="nav-item" sec:authorize="isAuthenticated()">-->
+<!--          <a class="nav-link" th:href="@{/home}"><i class="bi bi-house-door"></i> Inicio</a>-->
+<!--        </li>-->
         <!-- Menú Gestor -->
         <li class="nav-item dropdown" sec:authorize="hasAuthority('GESTOR')">
           <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -24,6 +24,8 @@
             <li><a class="dropdown-item" th:href="@{/manager/dashboard}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
             <li><a class="dropdown-item" th:href="@{/manager/project-list}"><i class="bi bi-list-task"></i> Mis Proyectos</a></li>
             <li><a class="dropdown-item" th:href="@{/projects/new}"><i class="bi bi-plus-circle"></i> Nuevo Proyecto</a></li>
+            <li><a class="dropdown-item" th:href="@{/manager/collaborators}"><i class="bi bi bi-person-plus"></i> Nuevo Colaborador</a></li>
+
           </ul>
         </li>
         <!-- Menú Colaborador -->
@@ -33,7 +35,8 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="collaboratorDropdown">
             <li><a class="dropdown-item" th:href="@{/collaborator/dashboard}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-            <li><a class="dropdown-item" th:href="@{/collaborator/project-list}"><i class="bi bi-diagram-3"></i> Mis Proyectos</a></li>
+            <li><a class="dropdown-item" th:href="@{/projects/collaborator/list}"><i class="bi bi-diagram-3"></i> Mis Proyectos</a></li>
+            <li><a class="dropdown-item" th:href="@{/collaborator/tasks}"><i class="bi bi-check2-square"></i> Mis Tareas</a></li>
             <!-- Podrías añadir un enlace a 'Mis Tareas' aquí -->
           </ul>
         </li>
@@ -43,8 +46,7 @@
       <ul class="navbar-nav ms-auto">
         <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person-circle"></i> <span sec:authorize="isAuthenticated()" th:text="${userName}"></span>
-          </a>
+            <i class="bi bi-person-circle"></i> <span sec:authorize="isAuthenticated()" sec:authentication="name"></span>          </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
             <li><a class="dropdown-item" th:href="@{/user/profile}"><i class="bi bi-person-lines-fill"></i> Mi Perfil</a></li>
             <li><hr class="dropdown-divider"></li>

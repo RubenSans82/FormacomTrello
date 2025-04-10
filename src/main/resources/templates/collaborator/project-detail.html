@@ -12,11 +12,11 @@
         <h1 th:text="${project.title}">Título Proyecto</h1>
         <div>
              <span th:text="${project.closed ? 'Cerrado' : 'Activo'}"
-                   th:classappend="${project.closed ? 'badge bg-secondary fs-5' : 'badge bg-success fs-5'}">
+                   th:classappend="${project.closed ? 'badge bg-secondary fs-7' : 'badge bg-success fs-7'}">
                    Estado
              </span>
             <!-- Botones de acción para el Gestor -->
-            <a th:href="@{/manager/project-list}" class="btn btn-outline-secondary btn-sm ms-2" title="Volver a la lista"><i class="bi bi-arrow-left"></i> Volver</a>
+            <a th:href="@{/projects/collaborator/list}" class="btn btn-outline-secondary btn-sm ms-2" title="Volver a la lista"><i class="bi bi-arrow-left"></i> Volver</a>
             <a sec:authorize="hasAuthority('GESTOR')" th:if="${!project.closed}" th:href="@{/projects/{id}/edit(id=${project.id})}" class="btn btn-warning btn-sm ms-2" title="Editar Proyecto"><i class="bi bi-pencil"></i> Editar</a>
             <form sec:authorize="hasAuthority('GESTOR')" th:action="@{/projects/{id}/close(id=${project.id})}" method="post" class="d-inline ms-2" th:if="${!project.closed}" onsubmit="return confirm('¿Estás seguro de cerrar este proyecto?');">
                 <button type="submit" class="btn btn-danger btn-sm" title="Cerrar Proyecto"><i class="bi bi-lock"></i> Cerrar</button>
@@ -89,12 +89,15 @@
             <td th:text="${task.assignedUser?.nombre} + ' ' + ${task.assignedUser?.apellidos}">Usuario Asignado</td>
             <td th:text="${task.dueDate != null ? #temporals.format(task.dueDate, 'dd/MM/yyyy') : '-'}">Fecha</td>
             <td>
-                    <span th:text="${task.status.displayName}"
-                          th:classappend="${task.status == T(com.example.formacomtrello.model.TaskStatus).COMPLETADA ? 'badge bg-success' : (task.status == T(com.example.formacomtrello.model.TaskStatus).PENDIENTE ? 'badge bg-warning text-dark' : 'badge bg-info text-dark')}">
-                    </span>
+            <span th:switch="${task.status.name()}">
+              <span th:case="'PENDIENTE'" class="badge bg-danger" th:text="${task.status.displayName}"></span>
+              <span th:case="'EN_PROGRESO'" class="badge bg-primary" th:text="${task.status.displayName}"></span>
+              <span th:case="'COMPLETADA'" class="badge bg-success" th:text="${task.status.displayName}"></span>
+              <span th:case="*" class="badge bg-warning" th:text="${task.status}"></span>
+            </span>
             </td>
             <td>
-                <a th:href="@{/tasks/{taskId}(taskId=${task.id})}" class="btn btn-outline-info btn-sm" title="Ver/Comentar"><i class="bi bi-chat-dots"></i></a>
+                <a th:if="${task.assignedUser?.email == #authentication.name}" th:href="@{/tasks/{taskId}(taskId=${task.id})}" class="btn btn-outline-info btn-sm" title="Ver/Comentar"><i class="bi bi-chat-dots"></i></a>
                 <!-- Acciones de Gestor (solo si proyecto no está cerrado) -->
                 <span sec:authorize="hasAuthority('GESTOR')" th:if="${!project.closed}">
                         <a th:href="@{/tasks/{taskId}/edit(taskId=${task.id})}" class="btn btn-outline-warning btn-sm" title="Editar Tarea"><i class="bi bi-pencil"></i></a>
@@ -102,12 +105,15 @@
                              <button type="submit" class="btn btn-outline-danger btn-sm" title="Eliminar Tarea"><i class="bi bi-trash"></i></button>
                         </form>
                     </span>
-                <!-- Acción de Colaborador (Marcar completada, solo si asignado, no completada y proyecto no cerrado) -->
-                <span sec:authorize="hasAuthority('COLABORADOR')" th:if="${task.assignedUser?.email == #authentication.name and task.status != T(com.example.formacomtrello.model.TaskStatus).COMPLETADA and !project.closed}">
-                           <form th:action="@{/tasks/{taskId}/complete(taskId=${task.id})}" method="post" class="d-inline">
-                               <button type="submit" class="btn btn-outline-primary btn-sm" title="Marcar como Completada"><i class="bi bi-check-lg"></i></button>
-                           </form>
-                     </span>
+                <!-- Acción de Colaborador (Marcar aceptada, solo si asignado, no completada y proyecto no cerrado) -->
+                <span sec:authorize="hasAuthority('COLABORADOR')"
+                      th:if="${task.assignedUser?.email == #authentication.name and task.status.name() == 'PENDIENTE' and !project.closed}">
+                    <form th:action="@{/tasks/{taskId}/accepted(taskId=${task.id})}" method="post" class="d-inline">
+                         <button type="submit" class="btn btn-outline-success btn-sm" title="Marcar como Aceptada">
+                             <i class="bi bi-check2-circle"></i>
+                         </button>
+                    </form>
+                </span>
             </td>
         </tr>
         </tbody>

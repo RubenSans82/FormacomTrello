@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 // Nota: Algunas rutas empiezan con /projects/{projectId}/tasks, otras con /tasks/{taskId}
@@ -319,6 +318,23 @@ public class TaskController {
             redirectAttributes.addFlashAttribute("successMessage", "Tarea marcada como completada.");
         } catch (ResourceNotFoundException | UnauthorizedAccessException | IllegalStateException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "No se pudo completar la tarea: " + e.getMessage());
+        }
+        return "redirect:/tasks/" + taskId; // Siempre redirigir de vuelta a la tarea
+    }
+
+    // --- Marcar Tarea como Aceptada (Colaborador) ---
+    @PostMapping("/tasks/{taskId}/accepted")
+    @PreAuthorize("hasAuthority('COLABORADOR')")
+    public String markTaskAsAccepted(@PathVariable Long taskId,
+                                     Authentication authentication,
+                                     RedirectAttributes redirectAttributes) {
+        String collaboratorEmail = authentication.getName();
+
+        try {
+            taskService.markTaskAsAccepted(taskId, collaboratorEmail);
+            redirectAttributes.addFlashAttribute("successMessage", "Tarea aceptada.");
+        } catch (ResourceNotFoundException | UnauthorizedAccessException | IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "No se pudo aceptar la tarea: " + e.getMessage());
         }
         return "redirect:/tasks/" + taskId; // Siempre redirigir de vuelta a la tarea
     }

@@ -7,9 +7,9 @@
 </head>
 <body>
 <section layout:fragment="content">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-7">
-      <h1 class="text-center mb-4">Registro de Colaborador</h1>
+
+      <h1 class="form-label">Registro de Colaborador</h1>
+        <hr>
 
       <!-- Mensaje de éxito -->
       <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
@@ -18,6 +18,8 @@
       <div th:if="${registrationError}" class="alert alert-danger" role="alert" th:text="${registrationError}"></div>
 
       <form th:action="@{/invite-collaborator}" th:object="${userDto}" method="post">
+        <div class="mb-3">
+          <div class="col-md-8 col-lg-7">
         <div class="row g-3">
           <div class="col-md-6 mb-3">
             <label for="nombre" class="form-label">Nombre:</label>
@@ -56,13 +58,17 @@
           <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" />
           <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">Error en telefono</div>
         </div>
+          </div>
+        </div>
 
-        <div class="d-grid">
+
+
+        <div class="d-flex justify-content-end">
+          <a th:href="'/manager/dashboard'" class="btn btn-secondary me-2">Cancelar</a>
           <button type="submit" class="btn btn-primary">Registrar Colaborador</button>
         </div>
       </form>
-    </div>
-  </div>
+
 </section>
 </body>
 </html>

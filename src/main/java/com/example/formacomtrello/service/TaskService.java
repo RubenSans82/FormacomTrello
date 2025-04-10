@@ -76,6 +76,16 @@ public interface TaskService {
     Task markTaskAsCompleted(Long taskId, String collaboratorEmail);
 
     /**
+     * Cambia el estado de una tarea a "EN PROGRESO". Solo el COLABORADOR del proyecto puede hacerlo.
+     * @param taskId ID de la tarea.
+     * @param collaboratorEmail Email del COLABORADOR.
+     * @return La tarea actualizada.
+     * @throws ResourceNotFoundException si la tarea no existe.
+     * @throws UnauthorizedAccessException si el usuario no es COLABORADOR de ese proyecto.
+     */
+    Task markTaskAsAccepted(Long taskId, String collaboratorEmail);
+
+    /**
      * Añade un comentario a una tarea. Solo GESTOR o COLABORADOR del proyecto pueden comentar.
      * @param taskId ID de la tarea.
      * @param commentDto DTO con el contenido del comentario.
@@ -110,4 +120,6 @@ public interface TaskService {
      * @throws UnauthorizedAccessException si el usuario no tiene acceso al proyecto de la tarea.
      */
     List<Comment> findCommentsByTaskId(Long taskId, String userEmail);
+
+
 }

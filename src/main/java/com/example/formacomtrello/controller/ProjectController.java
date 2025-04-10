@@ -232,4 +232,6 @@ public class ProjectController {
         model.addAttribute("projects", projects);
         return "collaborator/project-list";
     }
+
+
 }
