@@ -43,6 +43,8 @@ public class DashboardController {
         // Aquí puedes añadir más datos al modelo como proyectos recientes, etc.
         // model.addAttribute("projects", projectService.findProjectsByOwnerEmail(email));
         user.ifPresent(value -> model.addAttribute("userName", value.getNombre()));
+        model.addAttribute("collaboratorCount", userService.getCollaboratorCount());
+
 
         return "manager/dashboard";
     }

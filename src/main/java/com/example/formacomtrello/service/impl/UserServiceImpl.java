@@ -10,7 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -123,4 +125,19 @@ public class UserServiceImpl implements UserService {
     public boolean isValidEmail(String email) {
         return email != null && email.contains("@") && email.contains(".");
     }
+
+    // Otros métodos existentes
+
+    @Override
+    public List<User> findAllCollaborators() {
+        // Usar el enum Role directamente, sin .name()
+        return userRepository.findByRole(Role.COLABORADOR);
+    }
+
+    @Override
+    public long getCollaboratorCount() {
+       // Usar el enum Role directamente, sin .name()
+       return userRepository.countByRole(Role.COLABORADOR);
+    }
+
 }

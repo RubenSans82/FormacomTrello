@@ -3,6 +3,7 @@ package com.example.formacomtrello.service;
 import com.example.formacomtrello.dto.UserRegistrationDto;
 import com.example.formacomtrello.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -19,6 +20,19 @@ public interface UserService {
     
     // Método sobrecargado para invitar colaboradores (resuelve el error en ProjectServiceImpl)
     User inviteCollaborator(String email, String nombre, String apellidos, String password);
+
+    /**
+     * Busca todos los usuarios con rol de colaborador
+     * @return Lista de usuarios colaboradores
+     */
+    List<User> findAllCollaborators();
+
+    /**
+     * Cuenta el número total de colaboradores en el sistema
+     * @return Número de colaboradores
+     */
+    long getCollaboratorCount();
+
 
     // Otros métodos necesarios...
 }
