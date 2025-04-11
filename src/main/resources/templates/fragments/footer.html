@@ -2,9 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <!--/* Fragmento del Footer */-->
-<footer class="footer mt-auto py-3 bg-light fixed-bottom" th:fragment="footer">
+<footer class="mt-auto py-3 bg-dark text-light footer" th:fragment="footer"> <!-- Match header style -->
     <div class="container text-center">
-        <span class="text-muted">© <span th:text="${#dates.year(#dates.createNow())}"></span> Gestión de Proyectos App.</span>
+        <small>© <span th:text="${#dates.year(#dates.createNow())}"></span> Formacom Trello - Project Management Simplified.</small>
+        <!-- Optional: Add links or more info -->
+        <!-- <div class="mt-2">
+            <a href="#" class="text-light me-2">Privacy Policy</a>
+            <span class="text-muted">|</span>
+            <a href="#" class="text-light ms-2">Terms of Service</a>
+        </div> -->
     </div>
 </footer>
 </body>

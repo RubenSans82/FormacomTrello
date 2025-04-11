@@ -3,72 +3,74 @@
       layout:decorate="~{layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-  <title>Registro de Colaborador</title>
+  <title>Registrar Nuevo Colaborador</title>
 </head>
 <body>
 <section layout:fragment="content">
-
-      <h1 class="form-label">Registro de Colaborador</h1>
-        <hr>
-
-      <!-- Mensaje de éxito -->
-      <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
-      
-      <!-- Mensaje de error general -->
-      <div th:if="${registrationError}" class="alert alert-danger" role="alert" th:text="${registrationError}"></div>
-
-      <form th:action="@{/invite-collaborator}" th:object="${userDto}" method="post">
-        <div class="mb-3">
-          <div class="col-md-8 col-lg-7">
-        <div class="row g-3">
-          <div class="col-md-6 mb-3">
-            <label for="nombre" class="form-label">Nombre:</label>
-            <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error en nombre</div>
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8 col-xl-7"> <!-- Wider columns for this form -->
+      <div class="card shadow-sm">
+        <div class="card-body p-4 p-lg-5">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0"><i class="bi bi-person-plus me-2 text-info"></i>Registrar Nuevo Colaborador</h1>
+            <a th:href="@{/manager/dashboard}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-x-lg"></i> Cancelar
+            </a>
           </div>
-          <div class="col-md-6 mb-3">
-            <label for="apellidos" class="form-label">Apellidos:</label>
-            <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}">Error en apellidos</div>
-          </div>
+          <p class="text-muted mb-4">Crea una cuenta para un nuevo colaborador. Podrás asignarlo a proyectos más tarde. Recibirá un email para establecer su contraseña definitiva.</p>
+
+          <!-- Messages handled globally -->
+
+          <form th:action="@{/invite-collaborator}" th:object="${userDto}" method="post" novalidate>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+              </div>
+              <div class="col-md-6">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email (será el usuario del colaborador)</label>
+              <input type="email" id="email" th:field="*{email}" class="form-control" required />
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="password" class="form-label">Contraseña inicial</label>
+                <input type="password" id="password" th:field="*{password}" class="form-control" required />
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                <small class="form-text text-muted">Se le pedirá cambiarla al iniciar sesión.</small>
+              </div>
+              <div class="col-md-6">
+                <label for="confirmPassword" class="form-label">Confirmar Contraseña inicial</label>
+                <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required />
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="telefono" class="form-label">Teléfono <span class="text-muted">(Opcional)</span></label>
+              <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" />
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+            </div>
+
+            <div class="d-grid"> <!-- Full width button -->
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-person-check-fill me-1"></i> Registrar Colaborador
+              </button>
+            </div>
+          </form>
         </div>
-
-        <div class="mb-3">
-          <label for="email" class="form-label">Email (será el usuario del colaborador):</label>
-          <input type="email" id="email" th:field="*{email}" class="form-control" required />
-          <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error en email</div>
-        </div>
-
-        <div class="row g-3">
-          <div class="col-md-6 mb-3">
-            <label for="password" class="form-label">Contraseña inicial:</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error en contraseña</div>
-            <small class="form-text text-muted">El colaborador deberá cambiar esta contraseña en su primer inicio de sesión.</small>
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="confirmPassword" class="form-label">Confirmar Contraseña:</label>
-            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Error en confirmación</div>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="telefono" class="form-label">Teléfono (Opcional):</label>
-          <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" />
-          <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">Error en telefono</div>
-        </div>
-          </div>
-        </div>
-
-
-
-        <div class="d-flex justify-content-end">
-          <a th:href="'/manager/dashboard'" class="btn btn-secondary me-2">Cancelar</a>
-          <button type="submit" class="btn btn-primary">Registrar Colaborador</button>
-        </div>
-      </form>
-
+      </div>
+    </div>
+  </div>
 </section>
 </body>
 </html>

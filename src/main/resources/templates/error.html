@@ -7,32 +7,36 @@
 </head>
 <body>
 <section layout:fragment="content">
-  <div class="container text-center">
-    <h1 class="display-1 text-danger"><i class="bi bi-exclamation-triangle-fill"></i></h1>
-    <h2 th:text="${status ?: 'Error'}">Código de Error</h2>
-    <h3 th:text="${error ?: 'Ha ocurrido un problema'}">Tipo de Error</h3>
-    <p th:text="${message ?: 'Lo sentimos, algo salió mal.'}">Mensaje detallado del error.</p>
-    <p th:if="${trace}" class="text-start small text-muted" style="white-space: pre-wrap;">
-      <strong>Trace:</strong><br/>
-      <span th:text="${trace}">Stack trace aquí...</span>
-    </p>
-    <a th:href="@{/home}" class="btn btn-primary mt-3"><i class="bi bi-house-door"></i> Volver al Inicio</a>
-    <!-- Puedes añadir un botón para ir atrás -->
-    <button onclick="window.history.back();" class="btn btn-secondary mt-3"><i class="bi bi-arrow-left"></i> Volver Atrás</button>
-  </div>
+  <div class="container text-center py-5">
+    <div class="card border-danger shadow-sm" style="max-width: 600px; margin: auto;">
+      <div class="card-body p-5">
+        <h1 class="display-1 text-danger mb-3"><i class="bi bi-exclamation-octagon-fill"></i></h1>
+        <h2 class="card-title text-danger" th:text="${status != null ? status + ' ' + error : 'Error Inesperado'}">Error</h2>
+        <p class="card-text fs-5 mb-4" th:text="${message ?: 'Lo sentimos, algo no funcionó como se esperaba.'}">Mensaje detallado del error.</p>
 
-  <!--
-      Nota: Por defecto, Spring Boot mapea errores a /error.
-      Puedes configurar un ErrorController personalizado para pasar más detalles
-      (status, error, message, trace - deshabilitado en prod) a esta vista.
-      O puedes usar @ControllerAdvice con @ExceptionHandler para redirigir aquí
-      con atributos específicos en el modelo.
-      La variable 'errorMessage' es la que usamos para mensajes flash personalizados.
-  -->
-  <div th:if="${errorMessage}" class="alert alert-warning mt-4" role="alert">
-    <strong>Información adicional:</strong> <span th:text="${errorMessage}"></span>
-  </div>
+        <!-- Trace only shown if available (typically dev mode) -->
+        <div th:if="${trace}" class="accordion accordion-flush" id="errorTraceAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                Mostrar Detalles Técnicos (Trace)
+              </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#errorTraceAccordion">
+              <div class="accordion-body text-start small text-muted bg-light">
+                <pre style="white-space: pre-wrap; word-break: break-all;"><code th:text="${trace}">Stack trace aquí...</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div class="mt-4 pt-3 border-top">
+          <a th:href="@{/}" class="btn btn-primary me-2"><i class="bi bi-house-door me-1"></i> Volver al Inicio</a>
+          <button onclick="window.history.back();" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i> Volver Atrás</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 </body>
 </html>

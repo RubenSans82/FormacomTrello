@@ -8,107 +8,117 @@
 </head>
 <body>
 <section layout:fragment="content">
-  <h1>Mi Perfil</h1>
-  <hr>
+  <h1 class="h2 mb-4">Mi Perfil</h1>
 
-  <div class="row">
-    <div class="col-md-4 text-center mb-4">
-      <!-- Mostrar foto actual -->
-      <img th:src="${userProfileDto.fotoUrl ?: '/images/default-avatar.png'}" alt="Foto de perfil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-      <h5 th:text="${userProfileDto.nombre} + ' ' + ${userProfileDto.apellidos}">Nombre Usuario</h5>
-      <p class="text-muted" th:text="${userEmail}">email@ejemplo.com</p>
-      <span class="badge bg-info text-dark" th:text="${userRole}">ROL</span>
-    </div>
+  <div class="card shadow-sm">
+    <div class="row g-0">
+      <!-- Left Side: Avatar & Basic Info -->
+      <div class="col-md-4 col-lg-3 bg-light border-end text-center p-4 d-flex flex-column align-items-center">
+        <img th:src="${userProfileDto.fotoUrl ?: '/images/default-avatar.png'}" alt="Foto de perfil"
+             class="profile-avatar img-thumbnail rounded-circle mb-3 shadow-sm">
+        <h5 class="mb-1" th:text="${userProfileDto.nombre} + ' ' + ${userProfileDto.apellidos}">Nombre Usuario</h5>
+        <p class="text-muted small mb-2" th:text="${userEmail}">email@ejemplo.com</p>
+        <span class="badge fs-6" th:classappend="${userRole == 'GESTOR'} ? 'bg-primary' : 'bg-secondary'" th:text="${userRole}">ROL</span>
+        <small class="text-muted mt-auto pt-3">Miembro desde <span th:text="${memberSince != null ? #temporals.format(memberSince, 'MMMM yyyy') : 'N/A'}"></span></small>
+      </div>
 
-    <div class="col-md-8">
+      <!-- Right Side: Form -->
+      <div class="col-md-8 col-lg-9">
+        <div class="card-body p-4 p-lg-5">
+          <h4 class="mb-4">Editar Información de Perfil</h4>
 
-      <h4>Editar Información</h4>
+          <!-- Messages handled globally -->
 
-      <!-- Mensaje de error general -->
-      <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+          <form th:action="@{/user/profile/update}" th:object="${userProfileDto}" method="post" enctype="multipart/form-data" novalidate>
 
-      <form th:action="@{/user/profile/update}" th:object="${userProfileDto}" method="post" enctype="multipart/form-data">
-        <div class="row g-3">
-          <div class="col-md-6 mb-3">
-            <label for="nombre" class="form-label">Nombre:</label>
-            <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error nombre</div>
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="apellidos" class="form-label">Apellidos:</label>
-            <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}">Error apellidos</div>
-          </div>
-        </div>
+            <!-- Basic Info -->
+            <fieldset class="mb-4">
+              <legend class="h6 mb-3">Información Básica</legend>
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+                  <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
+                  <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                </div>
+                <div class="col-md-6">
+                  <label for="apellidos" class="form-label">Apellidos <span class="text-danger">*</span></label>
+                  <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
+                  <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
+                </div>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="telefono" class="form-label">Teléfono <span class="text-muted">(Opcional)</span></label>
+                  <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" placeholder="Ej: 600112233"/>
+                  <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+                </div>
+              </div>
+            </fieldset>
 
-        <div class="row g-3">
-          <div class="col-md-6 mb-3">
-          <label for="telefono" class="form-label">Teléfono:</label>
-          <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" />
-          <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">Error telefono</div>
-          </div>
-        </div>
+            <hr>
 
-        
-        <!-- Sección de cambio de contraseña mejorada -->
-        <div class="mb-3">
-          <h5>Cambio de Contraseña <small class="text-muted">(opcional)</small></h5>
-          <p class="form-text mb-3">Deja estos campos en blanco si no deseas cambiar tu contraseña.</p>
-          
-          <div class="row g-3">
-            <div class="col-md-6 mb-3">
-              <label for="currentPassword" class="form-label">Contraseña actual:</label>
-              <input type="password" id="currentPassword" th:field="*{currentPassword}" class="form-control"
-                     placeholder="Introduce tu contraseña actual" />
-              <div class="invalid-feedback d-block" th:if="${currentPasswordError}" th:text="${currentPasswordError}">Error contraseña actual</div>
+            <!-- Change Password Section -->
+            <fieldset class="mb-4">
+              <legend class="h6 mb-3">Cambiar Contraseña <small class="text-muted fw-normal">(Opcional)</small></legend>
+              <p class="form-text text-muted mb-3">Rellena estos campos solo si deseas cambiar tu contraseña actual.</p>
+
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label for="currentPassword" class="form-label">Contraseña Actual</label>
+                  <input type="password" id="currentPassword" th:field="*{currentPassword}" class="form-control" placeholder="Introduce tu contraseña actual"/>
+                  <div class="invalid-feedback d-block" th:if="${currentPasswordError}" th:text="${currentPasswordError}"></div>
+                </div>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="password" class="form-label">Nueva Contraseña</label>
+                  <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Mínimo 6 caracteres"/>
+                  <!-- Combine field error and manual error -->
+                  <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                  <div class="invalid-feedback d-block" th:if="${!#fields.hasErrors('password') and passwordError != null}" th:text="${passwordError}"></div>
+                </div>
+                <div class="col-md-6">
+                  <label for="confirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
+                  <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" placeholder="Repite la nueva contraseña"/>
+                  <div class="invalid-feedback d-block" th:if="${confirmPasswordError}" th:text="${confirmPasswordError}"></div>
+                </div>
+              </div>
+            </fieldset>
+
+            <hr>
+
+            <!-- Profile Picture Section -->
+            <fieldset class="mb-4">
+              <legend class="h6 mb-3">Foto de Perfil <small class="text-muted fw-normal">(Opcional)</small></legend>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="fotoFile" class="form-label">Subir nueva imagen</label>
+                  <input type="file" id="fotoFile" name="fotoFile" class="form-control form-control-sm" accept="image/jpeg, image/png, image/gif" />
+                  <div class="form-text small">JPG, PNG, GIF (máx. 5MB).</div>
+                  <div class="invalid-feedback d-block" th:if="${fotoFileError}" th:text="${fotoFileError}"></div>
+                </div>
+                <div class="col-md-6">
+                  <label for="fotoUrl" class="form-label">O usar URL de imagen</label>
+                  <input type="url" id="fotoUrl" th:field="*{fotoUrl}" class="form-control form-control-sm" placeholder="https://.../imagen.jpg"/>
+                  <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('fotoUrl')}" th:errors="*{fotoUrl}"></div>
+                  <div class="form-text small">Si subes un archivo, esta URL será ignorada.</div>
+                </div>
+              </div>
+            </fieldset>
+
+
+            <div class="d-flex justify-content-end border-top pt-4">
+              <a sec:authorize="hasAuthority('GESTOR')" th:href="@{/manager/dashboard}" class="btn btn-secondary me-2">Cancelar</a>
+              <a sec:authorize="hasAuthority('COLABORADOR')" th:href="@{/collaborator/dashboard}" class="btn btn-secondary me-2">Cancelar</a>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save-fill me-1"></i> Actualizar Perfil
+              </button>
             </div>
-          </div>
-
-          <div class="row g-3">
-            <div class="col-md-6 mb-3">
-              <label for="password" class="form-label">Nueva contraseña:</label>
-              <input type="password" id="password" th:field="*{password}" class="form-control"
-                     placeholder="Mínimo 6 caracteres" />
-              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password') || (passwordError != null)}" 
-                   th:text="${passwordError != null ? passwordError : #fields.errors('password')}">Error contraseña</div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="confirmPassword" class="form-label">Confirmar nueva contraseña:</label>
-              <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control"
-                     placeholder="Repite la nueva contraseña" />
-              <div class="invalid-feedback d-block" th:if="${confirmPasswordError}" th:text="${confirmPasswordError}">Error confirmación</div>
-            </div>
-          </div>
+          </form>
         </div>
-
-        <!-- Sección de foto de perfil mejorada -->
-        <div class="mb-4">
-          <label class="form-label fw-bold">Foto de Perfil:</label>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="fotoFile" class="form-label">Subir nueva imagen:</label>
-              <input type="file" id="fotoFile" name="fotoFile" class="form-control" accept="image/*" />
-              <div class="form-text">Formatos aceptados: JPG, PNG, GIF (máx. 5MB)</div>
-              <div class="invalid-feedback d-block" th:if="${fotoFileError}" th:text="${fotoFileError}">Error al subir imagen</div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="fotoUrl" class="form-label">O usar URL de imagen:</label>
-              <input type="url" id="fotoUrl" th:field="*{fotoUrl}" class="form-control" placeholder="https://ejemplo.com/imagen.jpg"/>
-              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('fotoUrl')}" th:errors="*{fotoUrl}">Error URL foto</div>
-              <div class="form-text">Si subes una imagen, esta URL será ignorada.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="d-flex justify-content-end">
-          <a sec:authorize="hasAuthority('GESTOR')" th:href="'/manager/dashboard'" class="btn btn-secondary me-2">Cancelar</a>
-          <a sec:authorize="hasAuthority('COLABORADOR')" th:href="'/collaborator/dashboard'" class="btn btn-secondary me-2">Cancelar</a>
-          <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
-
 
 </section>
 </body>

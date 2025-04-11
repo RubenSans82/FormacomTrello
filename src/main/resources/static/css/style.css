@@ -1,0 +1,230 @@
+/* --- Base & Fonts --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa; /* Light grey background */
+    color: #343a40; /* Default dark text color */
+    /* Optional: Add a subtle background pattern */
+    /* background-image: url('/images/subtle-grid-pattern.png'); */
+}
+
+/* --- Navbar & Footer --- */
+.navbar-brand {
+    font-weight: 600;
+}
+
+.navbar .nav-link.active {
+    font-weight: 500; /* Slightly emphasize active link */
+}
+
+.footer {
+    font-size: 0.9rem;
+}
+
+/* --- Hero Section (Home Page) --- */
+.hero-section {
+    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%); /* Primary gradient */
+    color: white;
+    padding: 5rem 0; /* Adjusted padding */
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.hero-section h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+.hero-section p.lead {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+.hero-section .btn {
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+}
+
+
+/* --- Cards --- */
+.card {
+    border: none; /* Cleaner look */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
+    border-radius: 0.5rem; /* Slightly softer corners */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    /* Optional subtle hover effect */
+    /* transform: translateY(-3px); */
+    /* box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); */
+}
+
+.card-header {
+    background-color: #e9ecef; /* Light grey header */
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 500;
+}
+
+.card-footer {
+    background-color: #f8f9fa; /* Match body background */
+    border-top: 1px solid #dee2e6;
+}
+
+/* Specific Card Styles from Home */
+.card-feature {
+    /* Inherits general card styles */
+}
+.card-feature .feature-icon {
+    font-size: 2.5rem; /* Slightly smaller icons */
+    color: #0d6efd; /* Primary color */
+    background-color: rgba(13, 110, 253, 0.1); /* Light primary background */
+    padding: 1rem;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    display: inline-flex; /* Fix icon centering issue */
+    align-items: center;
+    justify-content: center;
+    width: 60px; /* Ensure circle */
+    height: 60px;
+}
+.card-feature h3 {
+    margin-top: 0.5rem;
+}
+
+.role-card {
+    border-left: 5px solid #0d6efd; /* Primary accent */
+    background-color: #ffffff;
+}
+.role-card-collab {
+    border-left-color: #6c757d; /* Secondary accent */
+}
+
+/* --- Forms --- */
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.3rem; /* Slightly less space */
+}
+
+.form-control, .form-select {
+    border-radius: 0.3rem; /* Consistent rounding */
+    border: 1px solid #ced4da;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Ensure feedback is visible */
+.invalid-feedback.d-block {
+    display: block !important;
+    font-size: 0.875em;
+}
+
+/* Center simple forms like login/register */
+.form-signin-wrapper {
+    max-width: 450px;
+    margin: auto;
+}
+
+/* --- Tables --- */
+.table {
+    border-collapse: separate; /* Allows border-radius on cells if needed */
+    border-spacing: 0;
+    margin-bottom: 1.5rem; /* More space below tables */
+}
+
+.table thead {
+    vertical-align: bottom;
+}
+.table thead th {
+    background-color: #e9ecef; /* Light grey header */
+    border-bottom-width: 1px;
+    font-weight: 600;
+    color: #495057;
+    padding: 0.75rem 1rem;
+}
+
+.table tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.04); /* Subtle hover */
+}
+
+.table td, .table th {
+    padding: 0.75rem 1rem; /* Consistent padding */
+    vertical-align: middle; /* Align content vertically */
+}
+
+.table .btn-group .btn {
+    margin-right: 2px; /* Small space between buttons in a group */
+}
+.table .btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+/* --- Badges --- */
+.badge {
+    padding: 0.4em 0.65em; /* Slightly larger badges */
+    font-weight: 500;
+    line-height: 1;
+}
+
+/* --- Alerts --- */
+.alert {
+    border: none;
+    border-left: 5px solid;
+    border-radius: 0.3rem;
+}
+.alert-success { border-color: #198754; }
+.alert-danger { border-color: #dc3545; }
+.alert-warning { border-color: #ffc107; }
+.alert-info { border-color: #0dcaf0; }
+
+/* --- Profile Page --- */
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 4px solid #dee2e6;
+}
+
+/* --- Comments Section --- */
+.comments-list .card {
+    background-color: #f8f9fa; /* Slightly different background for comments */
+    box-shadow: none;
+    border: 1px solid #e9ecef;
+}
+.comments-list .card-body {
+    padding: 0.8rem 1rem;
+}
+
+/* --- Utility & Minor Tweaks --- */
+hr {
+    opacity: 0.15;
+    margin: 1.5rem 0; /* Consistent spacing around dividers */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600; /* Slightly bolder headings */
+}
+
+/* Ensure icons in buttons have good alignment */
+.btn i {
+    vertical-align: middle;
+    margin-top: -2px; /* Fine-tune icon vertical alignment */
+}
+.btn .bi-arrow-left, .btn .bi-arrow-right {
+    margin-top: -1px;
+}
+.btn-sm i {
+    font-size: 0.9em; /* Scale icons slightly in small buttons */
+    margin-top: -1px;
+}
+
+
+/* Style for required fields (optional) */
+/* label.required::after {
+    content: " *";
+    color: #dc3545;
+} */

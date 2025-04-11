@@ -7,44 +7,69 @@
 </head>
 <body>
 <section layout:fragment="content">
-  <h1>Dashboard del Gestor</h1>
-  <p>Bienvenido/a, <span th:text="${userName}">Gestor</span>.</p>
-  <hr>
-
-  <div class="row g-3">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Mis Proyectos</h5>
-          <p class="card-text">Ver y gestionar los proyectos que has creado.</p>
-          <a th:href="@{/manager/project-list}" class="btn btn-primary"><i class="bi bi-list-task"></i> Ver Mis Proyectos</a>
-        </div>
-      </div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h2">Dashboard del Gestor</h1>
+    <!-- Optional: Quick Actions -->
+    <div class="btn-group btn-group-sm">
+      <a th:href="@{/projects/new}" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i> Nuevo Proyecto</a>
+      <a th:href="@{/manager/collaborators}" class="btn btn-info text-dark"><i class="bi bi-person-plus me-1"></i> Añadir Colaborador</a>
     </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Nuevo Proyecto</h5>
-          <p class="card-text">Iniciar un nuevo proyecto.</p>
-          <a th:href="@{/projects/new}" class="btn btn-success"><i class="bi bi-plus-circle"></i> Crear Proyecto</a>
-        </div>
-      </div>
-    </div>
-    <!-- Puedes añadir más tarjetas o información relevante aquí -->
-    <!-- Por ejemplo: Tareas recientes, Notificaciones, etc. -->
   </div>
+  <p class="lead mb-4">Bienvenido/a de nuevo, <span th:text="${userName}">Gestor</span>. Aquí tienes un resumen de tu actividad.</p>
+  <hr class="mb-4">
 
-  <!-- Nueva fila para la sección de colaboradores -->
-  <div class="row g-3 mt-3">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Gestión de Colaboradores</h5>
-          <p class="card-text">Añadir colaboradores para tus proyectos.</p>
-          <a th:href="@{/manager/collaborators}" class="btn btn-info"><i class="bi bi-person-plus"></i> Añadir Colaborador</a>
+  <div class="row g-4">
+    <!-- Card Mis Proyectos -->
+    <div class="col-md-6 col-lg-4 d-flex align-items-stretch">
+      <div class="card w-100">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-list-task fs-2 text-primary me-3"></i>
+            <h5 class="card-title mb-0">Mis Proyectos</h5>
+          </div>
+          <p class="card-text text-muted">Administra los proyectos que has creado, asigna tareas y sigue el progreso.</p>
+          <a th:href="@{/manager/project-list}" class="btn btn-primary mt-auto align-self-start">
+            <i class="bi bi-arrow-right-circle me-1"></i> Ver Mis Proyectos
+          </a>
         </div>
       </div>
     </div>
+
+    <!-- Card Nuevo Proyecto -->
+    <div class="col-md-6 col-lg-4 d-flex align-items-stretch">
+      <div class="card w-100">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-plus-circle-dotted fs-2 text-success me-3"></i>
+            <h5 class="card-title mb-0">Nuevo Proyecto</h5>
+          </div>
+          <p class="card-text text-muted">Inicia un nuevo proyecto desde cero, define sus objetivos y descripción.</p>
+          <a th:href="@{/projects/new}" class="btn btn-success mt-auto align-self-start">
+            <i class="bi bi-plus-lg me-1"></i> Crear Proyecto
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Gestión Colaboradores -->
+    <div class="col-md-6 col-lg-4 d-flex align-items-stretch">
+      <div class="card w-100">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-people fs-2 text-info me-3"></i>
+            <h5 class="card-title mb-0">Gestión de Colaboradores</h5>
+          </div>
+          <p class="card-text text-muted">Registra nuevos colaboradores en la plataforma para poder invitarlos a tus proyectos.</p>
+          <a th:href="@{/manager/collaborators}" class="btn btn-info text-dark mt-auto align-self-start">
+            <i class="bi bi-person-plus-fill me-1"></i> Añadir Colaborador
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add more cards/widgets as needed -->
+    <!-- Example: Recent activity feed, Project status overview -->
+
   </div>
 
 </section>

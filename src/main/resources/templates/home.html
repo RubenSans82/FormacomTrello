@@ -4,39 +4,111 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 <head>
-  <title>Inicio - Gestión de Proyectos</title>
+  <title>Bienvenido a Formacom Trello</title>
 </head>
 <body>
 <section layout:fragment="content">
-  <div class="p-5 mb-4 bg-light rounded-3">
-    <div class="container-fluid py-5">
-      <h1 class="display-5 fw-bold">¡Bienvenido/a a Formacom Trello!</h1>
-      <p class="col-md-8 fs-4">Tu plataforma para gestionar proyectos, tareas y colaboradores.</p>
 
-        Por favor, <a th:href="@{/login}">inicia sesión</a> para continuar o <a th:href="@{/register}">regístrate como gestor</a>.
-      </p>
-
+  <!-- Hero Section -->
+  <div class="hero-section text-center">
+    <div class="container">
+      <h1 class="display-4 fw-bold">Formacom Trello</h1>
+      <p class="lead col-lg-8 mx-auto">Visualiza, planifica y ejecuta tus proyectos. Colabora con tu equipo y alcanza tus objetivos de forma eficiente.</p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center" sec:authorize="!isAuthenticated()">
+        <a th:href="@{/login}" class="btn btn-light btn-lg px-4 gap-3">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+        </a>
+        <a th:href="@{/register}" class="btn btn-outline-light btn-lg px-4">
+          <i class="bi bi-person-plus-fill me-1"></i> Registrarse como Gestor
+        </a>
+      </div>
+      <div class="mt-4" sec:authorize="isAuthenticated()">
+        <p class="lead">¡Bienvenido/a de nuevo, <span sec:authentication="name"></span>!</p>
+        <!-- Optional: Add a quick link to dashboard based on role -->
+        <a th:href="@{/manager/dashboard}" sec:authorize="hasAuthority('GESTOR')" class="btn btn-primary btn-lg px-4">
+          <i class="bi bi-speedometer2 me-1"></i> Ir al Dashboard Gestor
+        </a>
+        <a th:href="@{/collaborator/dashboard}" sec:authorize="hasAuthority('COLABORADOR')" class="btn btn-secondary btn-lg px-4">
+          <i class="bi bi-speedometer2 me-1"></i> Ir al Dashboard Colaborador
+        </a>
+      </div>
     </div>
   </div>
 
-  <!-- Podrías añadir contenido genérico aquí si home no siempre redirige -->
-  <div class="row align-items-md-stretch">
-    <div class="col-md-6 mb-3" sec:authorize="hasAuthority('GESTOR')">
-      <div class="h-100 p-5 text-white bg-dark rounded-3">
-        <h2>Gestiona tus Proyectos</h2>
-        <p>Crea, edita, asigna tareas y sigue el progreso de todos tus proyectos desde un solo lugar.</p>
-        <a class="btn btn-outline-light" type="button" th:href="@{/manager/project-list}">Ir a Mis Proyectos</a>
+  <!-- Features Section -->
+  <div class="container px-4 py-5" id="features">
+    <h2 class="pb-2 border-bottom text-center mb-5">Características Clave</h2> <!-- Increased mb -->
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+      <div class="col d-flex align-items-stretch"> <!-- Use align-items-stretch -->
+        <div class="card card-feature w-100">
+          <div class="card-body text-center d-flex flex-column"> <!-- Flex column -->
+            <div class="feature-icon">
+              <i class="bi bi-clipboard-data"></i>
+            </div>
+            <h3 class="fs-4 mt-3">Planificación Visual</h3>
+            <p class="mt-auto">Organiza proyectos y tareas en tableros intuitivos. Define flujos de trabajo y asigna responsabilidades.</p> <!-- mt-auto pushes text down -->
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="col-md-6 mb-3" sec:authorize="hasAuthority('COLABORADOR')">
-      <div class="h-100 p-5 bg-light border rounded-3">
-        <h2>Colabora Eficazmente</h2>
-        <p>Accede a los proyectos donde participas, revisa tus tareas asignadas y actualiza su estado.</p>
-        <a class="btn btn-outline-secondary" type="button" th:href="@{/collaborator/project-list}">Ver Proyectos</a>
+      <div class="col d-flex align-items-stretch">
+        <div class="card card-feature w-100">
+          <div class="card-body text-center d-flex flex-column">
+            <div class="feature-icon">
+              <i class="bi bi-check2-square"></i>
+            </div>
+            <h3 class="fs-4 mt-3">Gestión de Tareas</h3>
+            <p class="mt-auto">Crea, asigna y sigue el progreso de tareas individuales. Establece fechas límite y prioridades.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col d-flex align-items-stretch">
+        <div class="card card-feature w-100">
+          <div class="card-body text-center d-flex flex-column">
+            <div class="feature-icon">
+              <i class="bi bi-people-fill"></i>
+            </div>
+            <h3 class="fs-4 mt-3">Colaboración en Equipo</h3>
+            <p class="mt-auto">Invita a colaboradores, comparte archivos y comunícate directamente en el contexto de las tareas y proyectos.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Role-Specific Information (Styled Cards) -->
+  <div class="container my-5" sec:authorize="isAuthenticated()">
+    <div class="row justify-content-center g-4">
+
+      <!-- Manager Card -->
+      <div class="col-md-8 col-lg-6 d-flex align-items-stretch" sec:authorize="hasAuthority('GESTOR')">
+        <div class="card role-card p-4 w-100">
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-briefcase fs-2 text-primary me-3"></i>
+            <h2 class="h5 mb-0">Portal del Gestor</h2>
+          </div>
+          <p>Administra tus proyectos, crea nuevas tareas, invita colaboradores y supervisa el progreso general.</p>
+          <a class="btn btn-primary btn-sm mt-auto align-self-start" th:href="@{/manager/project-list}"> <!-- mt-auto pushes button down -->
+            <i class="bi bi-list-task me-1"></i> Ir a Mis Proyectos
+          </a>
+        </div>
+      </div>
+
+      <!-- Collaborator Card -->
+      <div class="col-md-8 col-lg-6 d-flex align-items-stretch" sec:authorize="hasAuthority('COLABORADOR')">
+        <div class="card role-card role-card-collab p-4 w-100">
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-diagram-3 fs-2 text-secondary me-3"></i>
+            <h2 class="h5 mb-0">Portal del Colaborador</h2>
+          </div>
+          <p>Accede a los proyectos en los que participas, consulta tus tareas asignadas y actualiza su estado.</p>
+          <a class="btn btn-secondary btn-sm mt-auto align-self-start" th:href="@{/projects/collaborator/list}">
+            <i class="bi bi-journal-text me-1"></i> Ver Mis Proyectos Asignados
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
 </section>
 </body>

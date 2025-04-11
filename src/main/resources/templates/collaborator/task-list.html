@@ -4,89 +4,92 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 <head>
-    <title>Mis Tareas</title>
+    <title>Mis Tareas Asignadas</title>
 </head>
 <body>
-    <div layout:fragment="content">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="col">
-                    <h1>Mis Tareas</h1>
-                </div>
-                <a sec:authorize="hasAuthority('COLABORADOR')" th:href="@{/collaborator/dashboard}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Volver a Dashboard</a>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">Mis Tareas Asignadas</h1>
+        <a sec:authorize="hasAuthority('COLABORADOR')" th:href="@{/collaborator/dashboard}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Dashboard
+        </a>
+    </div>
 
+    <div class="card shadow-sm">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Tareas Pendientes y En Progreso</h5>
+            <span class="badge bg-primary rounded-pill" th:text="${tasks.size() + ' tarea(s)'}"></span>
+        </div>
+        <div class="card-body p-0"> <!-- Remove padding for full-width table -->
+            <div th:if="${#lists.isEmpty(tasks)}" class="alert alert-info rounded-0 border-0 m-0 text-center fst-italic">
+                ¡Felicidades! No tienes tareas asignadas en este momento.
             </div>
-            <!-- Tabla de tareas -->
-            <div class="row">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Lista de tareas</h5>
-                            <span class="badge bg-primary" th:text="${tasks.size() + ' tareas'}"></span>
-                        </div>
-                        <div class="card-body">
-                            <div th:if="${tasks.size() == 0}" class="alert alert-info">
-                                No tienes tareas asignadas. Cuando un gestor te asigne una tarea, aparecerá aquí.
-                            </div>
 
-                            <div th:if="${tasks.size() != 0}" class="table-responsive">
-                                <table class="table table-hover table-striped">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Título</th>
-                                            <th>Proyecto</th>
-                                            <th>Estado</th>
-                                            <th>Fecha límite</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each="task : ${tasks}">
-                                            <td>
-                                                <span th:text="${task.title}"></span>
-                                            </td>
-                                            <td>
-                                                <a th:href="@{/projects/{id}(id=${task.project.id})}"
-                                                   th:text="${task.project.title}"
-                                                   class="text-decoration-none"></a>
-                                            </td>
-                                            <td>
-                                                <span th:switch="${task.status.name()}">
-                                                    <span th:case="'PENDIENTE'" class="badge bg-danger" th:text="${task.status.displayName}"></span>
-                                                    <span th:case="'EN_PROGRESO'" class="badge bg-primary" th:text="${task.status.displayName}"></span>
-                                                    <span th:case="'COMPLETADA'" class="badge bg-success" th:text="${task.status.displayName}"></span>
-                                                    <span th:case="*" class="badge bg-warning" th:text="${task.status}"></span>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span th:if="${task.dueDate != null}"
-                                                      th:text="${#temporals.format(task.dueDate, 'dd/MM/yyyy')}"></span>
-                                                <span th:unless="${task.dueDate != null}">Sin fecha</span>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group btn-group-sm">
-                                                    <a th:href="@{/tasks/{id}(id=${task.id})}"
-                                                       class="btn btn-outline-primary"
-                                                       title="Ver detalles">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                    <form  th:if="${task.assignedUser?.email == #authentication.name and task.status.name() == 'PENDIENTE'}" th:action="@{/tasks/{taskId}/accepted(taskId=${task.id})}" method="post" class="d-inline">
-                                                        <button type="submit" class="btn btn-outline-success btn-sm" title="Marcar como Aceptada">
-                                                            <i class="bi bi-check2-circle"></i>
-                                                        </button>
-                                                    </form>
-
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+            <div th:if="${!#lists.isEmpty(tasks)}" class="table-responsive">
+                <table class="table table-hover table-striped mb-0 align-middle"> <!-- Removed bottom margin -->
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col">Título</th>
+                        <th scope="col">Proyecto</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Fecha límite</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="task : ${tasks}">
+                        <td class="fw-medium">
+                            <a th:href="@{/tasks/{id}(id=${task.id})}"
+                               th:text="${task.title}"
+                               class="text-decoration-none"></a>
+                        </td>
+                        <td>
+                            <a th:href="@{/projects/{id}(id=${task.project.id})}"
+                               th:text="${task.project.title}"
+                               class="text-decoration-none text-muted small"></a>
+                        </td>
+                        <td>
+                                    <span th:switch="${task.status.name()}">
+                                        <span th:case="'PENDIENTE'" class="badge bg-warning text-dark" th:text="${task.status.displayName}"></span>
+                                        <span th:case="'EN_PROGRESO'" class="badge bg-primary" th:text="${task.status.displayName}"></span>
+                                        <span th:case="'COMPLETADA'" class="badge bg-success" th:text="${task.status.displayName}"></span>
+                                        <span th:case="*" class="badge bg-secondary" th:text="${task.status}"></span>
+                                    </span>
+                        </td>
+                        <td>
+                                    <span th:if="${task.dueDate != null}"
+                                          th:text="${#temporals.format(task.dueDate, 'dd/MM/yyyy')}"></span>
+                            <span th:unless="${task.dueDate != null}" class="text-muted">-</span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a th:href="@{/tasks/{id}(id=${task.id})}"
+                                   class="btn btn-outline-info"
+                                   title="Ver Detalles y Comentarios">
+                                    <i class="bi bi-chat-left-text"></i>
+                                </a>
+                                <!-- Mark as Accepted (only if PENDING) -->
+                                <form th:if="${task.status.name() == 'PENDIENTE' and !task.project.closed}"
+                                      th:action="@{/tasks/{taskId}/accepted(taskId=${task.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-success" title="Aceptar Tarea (Marcar En Progreso)">
+                                        <i class="bi bi-check2-circle"></i>
+                                    </button>
+                                </form>
+                                <!-- Mark as Complete (only if IN_PROGRESS) -->
+                                <form th:if="${task.status.name() == 'EN_PROGRESO' and !task.project.closed}"
+                                      th:action="@{/tasks/{taskId}/complete(taskId=${task.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-primary" title="Marcar Tarea como Completada">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                </form>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>

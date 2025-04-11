@@ -7,30 +7,44 @@
 </head>
 <body>
 <section layout:fragment="content">
-  <h1>Dashboard del Colaborador</h1>
-  <p>Bienvenido/a, <span th:text="${userName}">Colaborador</span>.</p>
-  <hr>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h2">Dashboard del Colaborador</h1>
+    <!-- Optional: Add quick actions if needed -->
+  </div>
+  <p class="lead mb-4">Bienvenido/a de nuevo, <span th:text="${userName}">Colaborador</span>.</p>
+  <hr class="mb-4">
 
-  <div class="row g-3">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Mis Proyectos</h5>
-          <p class="card-text">Ver los proyectos en los que participas.</p>
-          <a th:href="@{/projects/collaborator/list}" class="btn btn-info"><i class="bi bi-kanban"></i> Ver Proyectos</a>
+  <div class="row g-4"> <!-- Increased gap -->
+    <div class="col-md-6 d-flex align-items-stretch">
+      <div class="card w-100">
+        <div class="card-body d-flex flex-column"> <!-- Flex column -->
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-journal-text fs-2 text-info me-3"></i>
+            <h5 class="card-title mb-0">Mis Proyectos</h5>
+          </div>
+          <p class="card-text text-muted">Accede a los proyectos en los que estás colaborando activamente.</p>
+          <a th:href="@{/projects/collaborator/list}" class="btn btn-info mt-auto align-self-start"> <!-- Button pushed down -->
+            <i class="bi bi-arrow-right-circle me-1"></i> Ver Proyectos
+          </a>
         </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Mis Tareas</h5>
-          <p class="card-text">Ver y gestionar las tareas que te han asignado.</p>
-          <a th:href="@{/collaborator/tasks}" class="btn btn-primary"><i class="bi bi-list-task"></i> Ver Mis Tareas</a>
+    <div class="col-md-6 d-flex align-items-stretch">
+      <div class="card w-100">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-check2-square fs-2 text-primary me-3"></i>
+            <h5 class="card-title mb-0">Mis Tareas</h5>
+          </div>
+          <p class="card-text text-muted">Consulta y gestiona las tareas que te han sido asignadas en diferentes proyectos.</p>
+          <a th:href="@{/collaborator/tasks}" class="btn btn-primary mt-auto align-self-start">
+            <i class="bi bi-list-task me-1"></i> Ver Mis Tareas
+          </a>
         </div>
       </div>
     </div>
-    <!-- Puedes añadir más tarjetas o información relevante aquí -->
+    <!-- Add more relevant cards/widgets here -->
+    <!-- Example: Pending Tasks Count, Recent Activity -->
   </div>
 
 </section>

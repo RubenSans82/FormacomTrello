@@ -8,57 +8,69 @@
 <body>
 <section layout:fragment="content">
   <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-7">
-      <h1 class="text-center mb-4">Registro de Gestor</h1>
-
-      <!-- Mensaje de error general -->
-      <div th:if="${registrationError}" class="alert alert-danger" role="alert" th:text="${registrationError}"></div>
-
-      <form th:action="@{/process-register}" th:object="${userDto}" method="post">
-        <div class="row g-3">
-          <div class="col-md-6 mb-3">
-            <label for="nombre" class="form-label">Nombre:</label>
-            <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error en nombre</div>
+    <div class="col-md-8 col-lg-7 col-xl-6"> <!-- Adjusted columns -->
+      <div class="card shadow-sm">
+        <div class="card-body p-4 p-lg-5">
+          <div class="text-center mb-4">
+            <i class="bi bi-person-plus-fill fs-1 text-info"></i>
+            <h1 class="h3 fw-normal mt-2">Registro de Gestor</h1>
           </div>
-          <div class="col-md-6 mb-3">
-            <label for="apellidos" class="form-label">Apellidos:</label>
-            <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}">Error en apellidos</div>
+
+          <!-- Registration error handled globally in layout -->
+
+          <form th:action="@{/process-register}" th:object="${userDto}" method="post" novalidate>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+              </div>
+              <div class="col-md-6">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email (será tu usuario)</label>
+              <input type="email" id="email" th:field="*{email}" class="form-control" required />
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" id="password" th:field="*{password}" class="form-control" required />
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+              </div>
+              <div class="col-md-6">
+                <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required />
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+              </div>
+            </div>
+
+            <div class="mb-4"> <!-- Increased bottom margin -->
+              <label for="telefono" class="form-label">Teléfono <span class="text-muted">(Opcional)</span></label>
+              <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" />
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+            </div>
+
+            <div class="d-grid mb-3">
+              <button type="submit" class="btn btn-info btn-lg text-dark">
+                <i class="bi bi-check-lg me-1"></i> Registrarse
+              </button>
+            </div>
+          </form>
+
+          <hr class="my-4">
+
+          <div class="text-center">
+            <p class="mb-0">¿Ya tienes cuenta? <a th:href="@{/login}" class="fw-bold">Inicia sesión</a></p>
           </div>
         </div>
-
-        <div class="mb-3">
-          <label for="email" class="form-label">Email (será tu usuario):</label>
-          <input type="email" id="email" th:field="*{email}" class="form-control" required />
-          <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error en email</div>
-        </div>
-
-        <div class="row g-3">
-          <div class="col-md-6 mb-3">
-            <label for="password" class="form-label">Contraseña:</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error en contraseña</div>
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="confirmPassword" class="form-label">Confirmar Contraseña:</label>
-            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required />
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Error en confirmación</div>
-            <!-- Añadir validación de coincidencia si es necesario -->
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="telefono" class="form-label">Teléfono (Opcional):</label>
-          <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" />
-          <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">Error en telefono</div>
-        </div>
-
-        <div class="d-grid">
-          <button type="submit" class="btn btn-primary">Registrarse</button>
-        </div>
-      </form>
-      <p class="mt-3 text-center">¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión</a></p>
+      </div>
     </div>
   </div>
 </section>

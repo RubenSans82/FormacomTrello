@@ -3,64 +3,82 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-  <title th:text="${isEditMode ? 'Editar Tarea' : 'Crear Tarea'}">Formulario Tarea</title>
+  <title th:text="${isEditMode ? 'Editar Tarea' : 'Crear Nueva Tarea'}">Formulario Tarea</title>
 </head>
 <body>
 <section layout:fragment="content">
-  <h1 th:text="${isEditMode ? 'Editar Tarea' : 'Crear Nueva Tarea'}">Título Formulario</h1>
-  <p>Para Proyecto: <strong th:text="${projectTitle ?: 'Desconocido'}">Nombre Proyecto</strong></p> <!-- Necesitarás pasar projectTitle desde el controller -->
-  <hr>
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8"> <!-- Wider form -->
+      <div class="card shadow-sm">
+        <div class="card-body p-4 p-lg-5">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0" th:text="${isEditMode ? 'Editar Tarea' : 'Crear Nueva Tarea'}">
+              <i th:class="${isEditMode ? 'bi bi-pencil-square text-warning me-2' : 'bi bi-plus-square-dotted text-success me-2'}"></i>
+              Título Formulario
+            </h1>
+            <!-- Cancel button goes back to project detail -->
+            <a th:href="@{/projects/{projId}(projId=${projectId})}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-x-lg"></i> Cancelar
+            </a>
+          </div>
+          <p class="text-muted mb-4">Para Proyecto: <strong th:text="${projectTitle ?: 'Desconocido'}">Nombre Proyecto</strong></p>
+          <hr>
 
-  <!-- Mensaje de error general del controlador -->
-  <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+          <!-- Error message handled globally -->
 
-  <form th:action="${isEditMode ? '/tasks/' + taskId + '/edit' : '/projects/' + projectId + '/tasks'}"
-        th:object="${taskDto}" method="post">
+          <form th:action="${isEditMode ? '/tasks/' + taskId + '/edit' : '/projects/' + projectId + '/tasks'}"
+                th:object="${taskDto}" method="post" novalidate>
 
-    <!-- Campos ocultos si son necesarios (projectId generalmente no porque está en la URL de creación) -->
-    <!-- <input type="hidden" name="projectId" th:value="${projectId}" th:if="${!isEditMode}"/> -->
+            <div class="mb-3">
+              <label for="title" class="form-label">Título de la Tarea <span class="text-danger">*</span></label>
+              <input type="text" id="title" th:field="*{title}" class="form-control form-control-lg" required placeholder="Ej: Diseñar pantalla de login"/>
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+            </div>
 
-    <div class="mb-3">
-      <label for="title" class="form-label">Título de la Tarea:</label>
-      <input type="text" id="title" th:field="*{title}" class="form-control" required />
-      <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error título</div>
-    </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Descripción <span class="text-muted">(Opcional)</span></label>
+              <textarea id="description" th:field="*{description}" class="form-control" rows="4" placeholder="Añade detalles, requisitos o pasos a seguir..."></textarea>
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+            </div>
 
-    <div class="mb-3">
-      <label for="description" class="form-label">Descripción:</label>
-      <textarea id="description" th:field="*{description}" class="form-control" rows="4"></textarea>
-      <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error descripción</div>
-    </div>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label for="dueDate" class="form-label">Fecha de Vencimiento <span class="text-danger">*</span></label>
+                <input type="date" id="dueDate" th:field="*{dueDate}" class="form-control" required />
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('dueDate')}" th:errors="*{dueDate}"></div>
+              </div>
 
-    <div class="row g-3">
-      <div class="col-md-6 mb-3">
-        <label for="dueDate" class="form-label">Fecha de Vencimiento:</label>
-        <input type="date" id="dueDate" th:field="*{dueDate}" class="form-control" required />
-        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('dueDate')}" th:errors="*{dueDate}">Error fecha</div>
+              <div class="col-md-6">
+                <label for="assignedUserEmail" class="form-label">Asignar a Colaborador <span class="text-danger">*</span></label>
+                <select id="assignedUserEmail" th:field="*{assignedUserEmail}" class="form-select" required>
+                  <option value="">-- Selecciona un Colaborador --</option>
+                  <!-- Check if collaborators list is empty -->
+                  <option th:if="${#lists.isEmpty(collaborators)}" value="" disabled>No hay colaboradores en este proyecto</option>
+                  <option th:unless="${#lists.isEmpty(collaborators)}"
+                          th:each="collab : ${collaborators}"
+                          th:value="${collab.email}"
+                          th:text="${collab.nombre} + ' ' + ${collab.apellidos} + ' (' + ${collab.email} + ')'">
+                    Nombre Colaborador (email)
+                  </option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('assignedUserEmail')}" th:errors="*{assignedUserEmail}"></div>
+                <small th:if="${#lists.isEmpty(collaborators)}" class="form-text text-warning">
+                  <a th:href="@{/projects/{id}(id=${projectId})}">Invita colaboradores</a> al proyecto primero.
+                </small>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary btn-lg" th:text="${isEditMode ? 'Actualizar Tarea' : 'Crear Tarea'}">
+                <i class="bi bi-check-lg me-1"></i> Guardar
+              </button>
+            </div>
+
+          </form>
+        </div>
       </div>
-
-      <div class="col-md-6 mb-3">
-        <label for="assignedUserEmail" class="form-label">Asignar a Colaborador:</label>
-        <select id="assignedUserEmail" th:field="*{assignedUserEmail}" class="form-select" required>
-          <option value="">-- Selecciona un Colaborador --</option>
-          <option th:each="collab : ${collaborators}"
-                  th:value="${collab.email}"
-                  th:text="${collab.nombre} + ' ' + ${collab.apellidos} + ' (' + ${collab.email} + ')'">
-            Nombre Colaborador (email)
-          </option>
-        </select>
-        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('assignedUserEmail')}" th:errors="*{assignedUserEmail}">Error asignación</div>
-      </div>
     </div>
-
-    <div class="d-flex justify-content-end mt-3">
-      <!-- El enlace de cancelar debe ir a la tarea si editas, o al proyecto si creas -->
-      <a th:href="${isEditMode ? '/tasks/' + taskId : '/projects/' + projectId}" class="btn btn-secondary me-2">Cancelar</a>
-      <button type="submit" class="btn btn-primary" th:text="${isEditMode ? 'Actualizar Tarea' : 'Crear Tarea'}">Guardar</button>
-    </div>
-
-  </form>
-
+  </div>
 </section>
 </body>
 </html>
